@@ -1,0 +1,77 @@
+﻿@model Ecommerce.Models.Category
+
+@{
+    ViewData["Title"] = "edit";
+    Layout = "~/Areas/System/Views/Layout/Admin.cshtml";
+}
+
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row page-titles mx-0">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Danh mục</h4>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- row -->
+        <div class="row">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="card">
+
+                    <div class="card-body">
+                        <form class="" asp-action="edit" method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="Id" />
+                            @Html.AntiForgeryToken()
+                            <div>
+
+                                <section>
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Tên danh mục</label></h5>
+                                                <input type="text" asp-for="Name" class="form-control" />
+                                                <span class="text-danger" asp-validation-for="Name"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Hình ảnh</label></h5>
+                                                        <input  class="form-control" asp-for="NameImage" />
+                                                        <span class="text-danger" asp-validation-for="NameImage"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </section>
+                                <!-- <divs class="compose-content">
+                                    <h5 class="mb-4"><i class="fa fa-paperclip"></i> Hình ảnh</h5>
+
+                                    <div  class="d-flex flex-column align-items-center justify-content-center">
+                                        <div class="fallback w-100">
+                                            <input type="file" onchange="onUpload(this)" class="dropify" name="image" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div id="preview" class="mt-4"></div>
+                                </divs> -->
+                                <div class="text-left mt-4 mb-5">
+                                    <button class="btn btn-primary btn-sl-sm mr-3" type="submit">
+                                        <span class="mr-2"><i class="fa fa-paper-plane"></i></span> Thêm</button>
+                                    <a class="btn btn-dark btn-sl-sm" asp-action="index">
+                                        <span class="mr-2">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </span> Quay về
+                                    </a>
+                                   
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

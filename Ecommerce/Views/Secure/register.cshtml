@@ -1,0 +1,46 @@
+﻿@model  Ecommerce.Models.Account
+@{
+    ViewData["Title"] = "register";
+    Layout = "~/Views/Shared/LayoutSecure.cshtml";
+}
+
+<div class="auth-content">
+    <div class="card">
+        <div class="card-body text-center">
+            <div class="mb-4">
+                <img class="brand" src="~/Be/img/bootstraper-logo.png" alt="bootstraper logo">
+            </div>
+            <h6 class="mb-4 text-muted">Create new account</h6>
+            <form asp-action="register"  method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3 text-start">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" placeholder="Enter Name" asp-for="Fullname">
+                    <span class="text-danger" asp-validation-for="Fullname"></span>
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="email" class="form-label">Email adress</label>
+                    <input type="email" class="form-control" placeholder="Enter Email" asp-for="Email">
+                    <span class="text-danger" asp-validation-for="Email"></span>
+
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="Password" asp-for="Password">
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </div>
+                <div class="mb-3 text-start">
+                    <div class="form-check">
+                        <input class="form-check-input" name="confirm" type="checkbox" value="" id="check1">
+                        <label class="form-check-label" for="check1">
+                            I agree to the <a href="#" tabindex="-1">terms and policy</a>.
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary shadow-2 mb-4">Register</button>
+            </form>
+            <p class="mb-0 text-muted">Allready have an account? <a asp-controller="Secure" asp-action="login">Log in</a></p>
+        </div>
+    </div>
+</div>
+
