@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
 
 namespace Ecommerce.Areas.System.Controllers
@@ -70,7 +71,7 @@ namespace Ecommerce.Areas.System.Controllers
             string name_image = string.Empty;
             if (cate.NameImage != null)
             {
-                string uploadFolder = Path.Combine(environment.WebRootPath, "imgs/");
+                string uploadFolder = Path.Combine(environment.WebRootPath, "imgs/imgCategory");
                 // Sử dụng GUID để tạo tên tệp duy nhất cho file img
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + cate.NameImage.FileName;
                 string filePath = Path.Combine(uploadFolder, uniqueFileName);
@@ -130,7 +131,7 @@ namespace Ecommerce.Areas.System.Controllers
                     {
                         if (load.Image != null)
                         {
-                            string filepath = Path.Combine(environment.WebRootPath, "imgs", load.Image);
+                            string filepath = Path.Combine(environment.WebRootPath, "imgs/imgCategory", load.Image);
                             if (_fileSystem.File.Exists(filepath))
                             {
                                 _fileSystem.File.Delete(filepath);
@@ -166,29 +167,52 @@ namespace Ecommerce.Areas.System.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction("index");
+                TempData["ErrorMessage"] = "Id không hợp lệ.";
+                return RedirectToAction("Index");
             }
+
+            var category = db.Category.Include(c => c.Products).FirstOrDefault(c => c.Id == id);
+            if (category == null)
+            {
+                TempData["ErrorMessage"] = "Danh mục không tồn tại.";
+                return RedirectToAction("Index");
+            }
+
+            // Kiểm tra nếu danh mục có chứa sản phẩm thì báo lỗi
+            if (category.Products.Any())
+            {
+                TempData["ErrorMessage"] = "Không thể xóa danh mục vì có sản phẩm liên quan.";
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                db.Category.Remove(category);
+                db.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi xóa danh mục.";
+                return RedirectToAction("Index");
+            }
+
             var list = db.Category.Where(x => x.Id == id).SingleOrDefault();
             if (list != null)
             {
-                string folder_image = Path.Combine(environment.WebRootPath, "imgs/");
+                string folder_image = Path.Combine(environment.WebRootPath, "imgs/imgCategory");
                 string hinh = Path.Combine(Directory.GetCurrentDirectory(), folder_image, list.Image);
-                if (hinh != null)
+                if (_fileSystem.File.Exists(hinh))
                 {
-                    if (_fileSystem.File.Exists(hinh))
-                    {
-                        // Delete the file
-                        _fileSystem.File.Delete(hinh);
-
-                    }
+                    _fileSystem.File.Delete(hinh);
                 }
+
                 db.Category.Remove(list);
                 db.SaveChanges();
             }
 
             return RedirectToAction("Index");
-
         }
+
 
     }
 }

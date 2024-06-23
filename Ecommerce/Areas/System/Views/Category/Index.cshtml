@@ -8,6 +8,16 @@
 
  <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
 <div class="content-body">
+    @{
+        var errorMessage = TempData["ErrorMessage"] as string;
+    }
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
             <div class="container-fluid">
                 <div class="row page-titles mx-0">
                     <div class="col-sm-6 p-md-0">
@@ -53,7 +63,7 @@
                                             <tr>
                                                 <td>@item.Id</td>
                                                 <td>@item.Name</td>
-                                                <td><img width="100" src="~/imgs/@item.Image" /></td>
+                                                <td><img width="100" src="~/imgs/imgCategory/@item.Image" /></td>
                                          
                                                 
                                                 

@@ -60,7 +60,7 @@ public partial class EcommerceContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("producer");
             entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.StockQuantity).HasColumnName("stock_quantity");
+           
 
             entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.Products)
                 .HasForeignKey(d => d.IdCategory)

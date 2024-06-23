@@ -162,15 +162,15 @@
                                 </ul>
                             </li>
                       
-                            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                            <li><a class="has-arrow" @* href="javascript:void()" *@ aria-expanded="false"><i
                                         class="mr-2 fa fa-list"></i><span class="nav-text">Danh sách sản phẩm</span></a>
                                 <ul aria-expanded="false">
-                                    <li><a href="">Danh mục</a></li>
-                                    <li><a href="">Sản phẩm</a></li>
+                            <li><a asp-controller="Category" asp-action="Index">Danh mục</a></li>
+                            <li><a asp-controller="Product" asp-action="Index">Sản phẩm</a></li>
                                 </ul>
                             </li>
                        
-                            <li><a href="" aria-expanded="false"><i
+                          @*   <li><a href="" aria-expanded="false"><i
                                         class="fa fa-address-card mr-2"></i><span class="nav-text">Logo</span></a></li>
                     
                             <li><a href="" aria-expanded="false"><i
@@ -182,7 +182,7 @@
                                     <li><a href="">Tạo mới đơn hàng</a></li>
                                     <li><a href="">Danh sách đơn hàng</a></li>
                                 </ul>
-                            </li>
+                            </li> *@
                       
                 </ul>
 

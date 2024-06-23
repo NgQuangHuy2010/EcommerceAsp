@@ -23,7 +23,8 @@
   <ItemGroup>
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
-    <Folder Include="wwwroot\imgs\" />
+    <Folder Include="wwwroot\imgs\imgProducts\" />
+    <Folder Include="wwwroot\imgs\imgCategory\" />
   </ItemGroup>
 
 </Project>
