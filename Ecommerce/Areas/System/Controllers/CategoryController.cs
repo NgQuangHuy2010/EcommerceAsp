@@ -165,6 +165,7 @@ namespace Ecommerce.Areas.System.Controllers
         [Route("delete")]
         public IActionResult delete(int? id)
         {
+
             if (id == null)
             {
                 TempData["ErrorMessage"] = "Id không hợp lệ.";
@@ -184,6 +185,23 @@ namespace Ecommerce.Areas.System.Controllers
                 TempData["ErrorMessage"] = "Không thể xóa danh mục vì có sản phẩm liên quan.";
                 return RedirectToAction("Index");
             }
+            else
+            {
+                var list = db.Category.Where(x => x.Id == id).SingleOrDefault();
+                if (list != null)
+                {
+                    string folder_image = Path.Combine(environment.WebRootPath, "imgs/imgCategory");
+                    string hinh = Path.Combine(Directory.GetCurrentDirectory(), folder_image, list.Image);
+                    if (_fileSystem.File.Exists(hinh))
+                    {
+                        _fileSystem.File.Delete(hinh);
+                    }
+
+                    db.Category.Remove(list);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
 
             try
             {
@@ -195,21 +213,6 @@ namespace Ecommerce.Areas.System.Controllers
                 TempData["ErrorMessage"] = "Đã xảy ra lỗi khi xóa danh mục.";
                 return RedirectToAction("Index");
             }
-
-            var list = db.Category.Where(x => x.Id == id).SingleOrDefault();
-            if (list != null)
-            {
-                string folder_image = Path.Combine(environment.WebRootPath, "imgs/imgCategory");
-                string hinh = Path.Combine(Directory.GetCurrentDirectory(), folder_image, list.Image);
-                if (_fileSystem.File.Exists(hinh))
-                {
-                    _fileSystem.File.Delete(hinh);
-                }
-
-                db.Category.Remove(list);
-                db.SaveChanges();
-            }
-
             return RedirectToAction("Index");
         }
 
