@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Ecommerce.Models.Category>
+﻿@model Ecommerce.ModelsView.HomeViewModel;
 
 @{
     ViewData["Title"] = "Index";
@@ -80,12 +80,12 @@
 
             <div class="py-4 px-5 row d-flex justify-content-between">
 
-                @foreach (var listCategory in Model)
+                @foreach (var listCategory in Model.Category)
                 {
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6 category-item-test bg-white my-3 mx-0 px-0 text-center">
                         <a href="" class="text-decoration-none">
                         <div class="circle mx-auto mb-2">
-                                <img src="~/imgs/@listCategory.Image"
+                                <img src="~/imgs/imgCategory/@listCategory.Image"
                                  alt=""
                                  class="img-fluid inner-circle" />
                         </div>
@@ -114,71 +114,35 @@
 
             </div>
             <div class="owl-carousel other-carousel owl-theme pt-1">
-                <div class="item rounded-lg">
-                    <div class="card">
-                        <img src="img/10054793-tu-lanh-samsung-inverter-rt22m4040dx-sv-1.jpg"
-                             class="card-img-top"
-                             alt="Product 2" />
-                        <div class="card-body">
-                            <a href="" class="text-decoration-none">
-                                <p class="card-title">Product 2</p>
-                            </a>
-                            <p class="card-text text-price">1200000</p>
+                 @foreach (var listProduct in Model.Products)
+                {
+                    <div class="item rounded-lg">
+                       @*  <div class="card ">
+                            <img src="~/imgs/imgProducts/@listProduct.ImageProduct"
+                                 class="card-img-top    " />
+                            <div class="card-body">
+                                <a href="" class="text-decoration-none">
+                                    <p class="card-title">@listProduct.NameProduct</p>
+                                </a>
+                                <p class="card-text text-price">@listProduct.PriceProduct</p>
+                            </div>
+                        </div> *@
+                        <div class="card rounded-lg card-product-today-recommend">
+                            <img src="~/imgs/imgProducts/@listProduct.ImageProduct" class="card-img-top" alt="Product 1">
+                            <div class="card-body">
+                                <h5 class="card-title">Product 1</h5>
+                                <p class="card-text text-price">1200000</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="item">
-                    <div class="card">
-                        <img src="img/10047544-may-lam-sua-hat-da-nang-tefal-bl967b66-1.jpg"
-                             class="card-img-top"
-                             alt="Product 2" />
-                        <div class="card-body">
-                            <p class="card-title">Product 2</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="card">
-                        <img src="img/product/product-3.jpg"
-                             class="card-img-top"
-                             alt="Product 3" />
-                        <div class="card-body">
-                            <p class="card-title">Product 3</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="card">
-                        <img src="img/10047544-may-lam-sua-hat-da-nang-tefal-bl967b66-1.jpg"
-                             class="card-img-top"
-                             alt="Product 2" />
-                        <div class="card-body">
-                            <p class="card-title">Product 2</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="card">
-                        <img src="img/10047544-may-lam-sua-hat-da-nang-tefal-bl967b66-1.jpg"
-                             class="card-img-top"
-                             alt="Product 2" />
-                        <div class="card-body">
-                            <p class="card-title">Product 2</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="card">
-                        <img src="img/10047544-may-lam-sua-hat-da-nang-tefal-bl967b66-1.jpg"
-                             class="card-img-top"
-                             alt="Product 2" />
-                        <div class="card-body">
-                            <p class="card-title">Product 2</p>
-                        </div>
-                    </div>
-                </div>
+                }
                 <!-- Thêm nhiều sản phẩm hơn nếu cần -->
             </div>
+
+          
+
+
+
         </div>
     </div>
 </section>

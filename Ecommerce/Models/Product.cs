@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Ecommerce.Models;
+﻿namespace Ecommerce.Models;
 
 public partial class Product
 {
@@ -11,10 +9,6 @@ public partial class Product
     public string? NameProduct { get; set; }
 
     public string? ImageProduct { get; set; }
-
-    [NotMapped]
-    public IFormFile? NameImage { get; set; }
-
     public decimal? PriceProduct { get; set; }
 
     public decimal? Discount { get; set; }

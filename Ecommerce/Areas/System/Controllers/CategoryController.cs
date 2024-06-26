@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Models;
+using Ecommerce.ModelsView;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
@@ -37,7 +38,7 @@ namespace Ecommerce.Areas.System.Controllers
         [Route("add")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult add_category(Category cate)
+        public IActionResult add_category(CategoryViewModel cate)
         {
             // Kiểm tra loại tệp trước khi kiểm tra ModelState
             if (cate.NameImage != null)
@@ -66,7 +67,7 @@ namespace Ecommerce.Areas.System.Controllers
         }
 
 
-        public string UploadImage(Category cate)
+        public string UploadImage(CategoryViewModel cate)
         {
             string name_image = string.Empty;
             if (cate.NameImage != null)
@@ -85,7 +86,18 @@ namespace Ecommerce.Areas.System.Controllers
         }
 
 
+        private string GetImagePath(string imagecategory)
+        {
+            if (string.IsNullOrEmpty(imagecategory))
+            {
+                return null; // hoặc đường dẫn tạm thời nếu không có hình ảnh mặc định
+            }
 
+            // Đường dẫn đầy đủ đến thư mục chứa hình ảnh
+            var imagePath = Path.Combine("/imgs/imgCategory", imagecategory);
+
+            return imagePath;
+        }
 
 
 
@@ -96,19 +108,32 @@ namespace Ecommerce.Areas.System.Controllers
             {
                 return RedirectToAction("Index");
             }
-            var list = db.Category.Find(id);
-            if (list == null)
+            var category = db.Category.Find(id);
+            if (category == null)
             {
                 return RedirectToAction("Index");
 
             }
-            return View(list);
+            var categoryViewModel = new CategoryViewModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Image = category.Image,
+
+            };
+            ViewBag.ImagePath = GetImagePath(category.Image);
+
+            return View(categoryViewModel);
         }
+
         [Route("edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int? id, Category cate)
+        public IActionResult Edit(int? id, CategoryViewModel cate)
         {
+            //tìm id của category và đưa đường dẫn vào viewbag để luôn hiện hình ảnh của id đó thông qua GetImagePath 
+            var category = db.Category.Find(id);
+            ViewBag.ImagePath = GetImagePath(category.Image);
             // Kiểm tra loại tệp trước khi kiểm tra ModelState
             if (cate.NameImage != null)
             {
@@ -165,6 +190,7 @@ namespace Ecommerce.Areas.System.Controllers
         [Route("delete")]
         public IActionResult delete(int? id)
         {
+
             if (id == null)
             {
                 TempData["ErrorMessage"] = "Id không hợp lệ.";
@@ -184,6 +210,23 @@ namespace Ecommerce.Areas.System.Controllers
                 TempData["ErrorMessage"] = "Không thể xóa danh mục vì có sản phẩm liên quan.";
                 return RedirectToAction("Index");
             }
+            else
+            {
+                var list = db.Category.Where(x => x.Id == id).SingleOrDefault();
+                if (list != null)
+                {
+                    string folder_image = Path.Combine(environment.WebRootPath, "imgs/imgCategory");
+                    string hinh = Path.Combine(Directory.GetCurrentDirectory(), folder_image, list.Image);
+                    if (_fileSystem.File.Exists(hinh))
+                    {
+                        _fileSystem.File.Delete(hinh);
+                    }
+
+                    db.Category.Remove(list);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
 
             try
             {
@@ -195,21 +238,6 @@ namespace Ecommerce.Areas.System.Controllers
                 TempData["ErrorMessage"] = "Đã xảy ra lỗi khi xóa danh mục.";
                 return RedirectToAction("Index");
             }
-
-            var list = db.Category.Where(x => x.Id == id).SingleOrDefault();
-            if (list != null)
-            {
-                string folder_image = Path.Combine(environment.WebRootPath, "imgs/imgCategory");
-                string hinh = Path.Combine(Directory.GetCurrentDirectory(), folder_image, list.Image);
-                if (_fileSystem.File.Exists(hinh))
-                {
-                    _fileSystem.File.Delete(hinh);
-                }
-
-                db.Category.Remove(list);
-                db.SaveChanges();
-            }
-
             return RedirectToAction("Index");
         }
 

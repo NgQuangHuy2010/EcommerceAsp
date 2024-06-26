@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Models;
+using Ecommerce.ModelsView;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controllers
@@ -8,8 +9,13 @@ namespace Ecommerce.Controllers
         public EcommerceContext db = new EcommerceContext();
         public IActionResult Index()
         {
-            var listCategory = db.Category.Take(12).ToList();
-            return View(listCategory);
+            var viewModel = new HomeViewModel
+            {
+                Category = db.Category.Take(12).ToList(),
+                Products = db.Products.ToList()
+            };
+
+            return View(viewModel);
         }
     }
 }

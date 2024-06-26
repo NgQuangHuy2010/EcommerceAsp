@@ -1,4 +1,4 @@
-﻿@model Ecommerce.Models.Category
+﻿@model Ecommerce.ModelsView.CategoryViewModel
 
 @{
     ViewData["Title"] = "edit";
@@ -38,24 +38,35 @@
                                         </div>
                                         <div class="col-lg-6 mb-4">
                                             <div class="form-group">
-                                                <h5><label class="text-label">Hình ảnh</label></h5>
-                                                        <input  class="form-control" asp-for="NameImage" />
+                                                <h5><label class="text-label">Cập nhật ảnh mới</label></h5>
+                                                <input id="single-file-input" class="form-control" asp-for="NameImage" />
                                                         <span class="text-danger" asp-validation-for="NameImage"></span>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-4 ">
+                                        @*     Viewbag láy từ controller để hiện hình ảnh đang có trong id này *@
+                                            @if (ViewBag.ImagePath != null)
+                                            {
+                                                <div class="form-group">
+                                                    <h5>
+                                                        <label class="text-label">Hình ảnh hiện tại</label>
+                                                    </h5>
+                                                    <br />
+                                                    <img src="@ViewBag.ImagePath" style="max-width: 200px; margin-top: 10px;" />
 
-                                </section>
-                                <!-- <divs class="compose-content">
-                                    <h5 class="mb-4"><i class="fa fa-paperclip"></i> Hình ảnh</h5>
+                                                </div>
+                                            }
 
-                                    <div  class="d-flex flex-column align-items-center justify-content-center">
-                                        <div class="fallback w-100">
-                                            <input type="file" onchange="onUpload(this)" class="dropify" name="image" accept="image/*">
+                                        </div>
+                                        <div class="col-lg-6 mb-4 ">
+                                            <h5><label class="text-label">Hình ảnh mới</label></h5>
+                                            <div id="single-preview"></div>
                                         </div>
                                     </div>
-                                    <div id="preview" class="mt-4"></div>
-                                </divs> -->
+                                </section>
+                         
                                 <div class="text-left mt-4 mb-5">
                                     <button class="btn btn-primary btn-sl-sm mr-3" type="submit">
                                         <span class="mr-2"><i class="fa fa-paper-plane"></i></span> Thêm</button>
@@ -74,4 +85,31 @@
         </div>
     </div>
 </div>
+@* cần thêm @RenderSection("Scripts", required: false) ở layout ,*@
+@* đoạn @section script này dùng để validation ngay khi người dùng bỏ trống input nhấn submit ko reload trang *@
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.6.2/js/dropify.min.js"></script>
+<script>
+    document.getElementById('single-file-input').addEventListener('change', function (event) {
+        var preview = document.getElementById('single-preview');
+        preview.innerHTML = ''; // Xóa hình ảnh hiện tại (nếu có)
 
+        var file = event.target.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Uploaded Image';
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '300px';
+            preview.appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+    });
+</script>

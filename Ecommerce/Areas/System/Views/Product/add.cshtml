@@ -1,8 +1,9 @@
-﻿@model Ecommerce.Models.Product
+﻿@model Ecommerce.ModelsView.ProductsViewModel
 @{
     ViewData["Title"] = "add";
     Layout = "~/Areas/System/Views/Layout/Admin.cshtml";
 }
+<link href="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.6.2/css/dropify.min.css" rel="stylesheet">
 
 <div class="content-body">
             <div class="container-fluid">
@@ -49,16 +50,20 @@
 
                                                 </div>
                                                 </div>
-                                                <div class="col-lg-6 mb-4">
-                                                    <div class="form-group">
-                                            <h5>
-                                                <label class="text-label">Hình ảnh sản phẩm</label><h5>
-                                                    <input asp-for="NameImage" type="file"
-                                                           class="form-control" />
-                                                    <span class="text-danger" asp-validation-for="NameImage"></span>
+                                            <div class="row">
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5>
+                                                    <label class="text-label">Hình ảnh sản phẩm</label><h5>
+                                                        <input id="single-file-input" asp-for="NameImage" type="file"
+                                                               class="form-control" />
+                                            </div>
+                                            <span class="text-danger" asp-validation-for="NameImage"></span>
 
-                                                    </div>
-                                                </div>
+                                        </div>
+                                            <div class="col-lg-6 my-4" id="single-preview"></div>
+
+                                            </div>
 
 
                                     <div class="row">
@@ -68,9 +73,10 @@
                                                         <div class="input-group">
                                                 <input asp-for="PriceProduct"
                                                        class="form-control" type="number" />
-                                                <span class="text-danger" asp-validation-for="PriceProduct"></span>
                                                         </div>
                                                     </div>
+                                            <span class="text-danger" asp-validation-for="PriceProduct"></span>
+
                                                 </div>
                                                 <div class="col-lg-6 mb-4">
                                                     <div class="form-group">
@@ -172,3 +178,24 @@
                 </div>
             </div>
         </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.6.2/js/dropify.min.js"></script>
+<script>
+    document.getElementById('single-file-input').addEventListener('change', function (event) {
+        var preview = document.getElementById('single-preview');
+        preview.innerHTML = ''; // Xóa hình ảnh hiện tại (nếu có)
+
+        var file = event.target.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Uploaded Image';
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '300px';
+            preview.appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+    });
+</script>
