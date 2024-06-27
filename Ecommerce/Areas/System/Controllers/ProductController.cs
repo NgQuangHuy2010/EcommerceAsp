@@ -116,6 +116,7 @@ namespace Ecommerce.Areas.System.Controllers
             {
                 return RedirectToAction("Index");
             }
+<<<<<<< HEAD
 
             var product = db.Products.Find(id);
             if (product == null)
@@ -226,6 +227,91 @@ namespace Ecommerce.Areas.System.Controllers
             return View(products);
         }
 
+=======
+
+            var product = db.Products.Find(id);
+            if (product == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // Lấy danh sách danh mục
+            var categories = db.Category.ToList();
+            //tạo một đối tượng SelectList có categories là để tạo danh sách chọn (dropdown list) và id , name là thuộc tính của đối tượng
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.IdCategory);  // product.IdCategory được sử dụng để đánh dấu mục nào trong danh sách được chọn mặc định (selected attribute)
+
+            return View(product);
+        }
+
+
+
+
+        [Route("edit")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int? id, Product products)
+        {
+            // Kiểm tra loại tệp trước khi kiểm tra ModelState
+            if (products.NameImage != null)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var fileExtension = Path.GetExtension(products.NameImage.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("NameImage", "Chỉ chấp nhận các tệp có đuôi: " + string.Join(", ", allowedExtensions));
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                //var load=db.Products.Find(id);
+                var load = db.Products.Where(x => x.Id == id).SingleOrDefault();
+                if (load != null)
+                {
+                    if (products.NameImage != null)  //chọn hình
+                    {
+                        if (load.ImageProduct != null)
+                        {
+                            string filepath = Path.Combine(environment.WebRootPath, "imgs/imgProducts", load.ImageProduct);
+                            if (_fileSystem.File.Exists(filepath))
+                            {
+                                _fileSystem.File.Delete(filepath);
+                            }
+                        }
+                        string tenhinh = UploadImage(products);
+                        load.ImageProduct = tenhinh;
+
+                    }
+                    else  //không chọn hình
+                    {
+                        load.ImageProduct = load.ImageProduct;
+                    }
+                    load.Description = products.Description;
+                    load.NameProduct = products.NameProduct;
+                    load.PriceProduct = products.PriceProduct;
+                    load.IdCategory = products.IdCategory;
+                    load.Discount = products.Discount;
+                    load.Model = products.Model;
+                    load.Producer = products.Producer;
+                    load.Origin = products.Origin;
+                    load.Status = products.Status;
+                    db.Products.Update(load);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            // Lấy danh sách danh mục
+            var categories = db.Category.ToList();
+            //tạo một đối tượng SelectList có categories là để tạo danh sách chọn (dropdown list) và id , name là thuộc tính của đối tượng
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", products.IdCategory);  // product.IdCategory được sử dụng để đánh dấu mục nào trong danh sách được chọn mặc định (selected attribute)
+            return View(products);
+        }
+>>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
 
 
         [Route("delete")]

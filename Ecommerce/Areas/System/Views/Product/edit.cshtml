@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿@model Ecommerce.ModelsView.ProductsViewModel;
 
+=======
+﻿@model Ecommerce.Models.Product;
+>>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
 @{
     ViewData["Title"] = "edit";
     Layout = "~/Areas/System/Views/Layout/Admin.cshtml";
@@ -54,13 +58,18 @@
                                         <div class="col-lg-6 mb-4">
                                             <div class="form-group">
                                                 <h5>
+<<<<<<< HEAD
                                                     <label class="text-label">Cập nhật ảnh mới</label></h5>
+=======
+                                                    <label class="text-label">Hình ảnh sản phẩm</label></h5>
+>>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
                                                         <input id="single-file-input" asp-for="NameImage" type="file"
                                                                class="form-control" />
                                             </div>
                                             <span class="text-danger" asp-validation-for="NameImage"></span>
 
                                         </div>
+<<<<<<< HEAD
                                     </div>
 
 
@@ -88,6 +97,12 @@
 
                                     
 
+=======
+                                        <div class="col-lg-6 my-4" id="single-preview"></div>
+
+                                    </div>
+
+>>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
 
                                     <div class="row">
                                         <div class="col-lg-6 mb-4">
@@ -204,6 +219,7 @@
         </div>
     </div>
 </div>
+<<<<<<< HEAD
  @* cần thêm @RenderSection("Scripts", required: false) ở layout ,*@
  @* đoạn @section script này dùng để validation ngay khi người dùng bỏ trống input nhấn submit ko reload trang *@
 @section Scripts {
@@ -211,6 +227,8 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+=======
+>>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.6.2/js/dropify.min.js"></script>
 <script>
     document.getElementById('single-file-input').addEventListener('change', function (event) {
