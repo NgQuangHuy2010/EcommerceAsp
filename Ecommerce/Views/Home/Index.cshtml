@@ -114,34 +114,34 @@
 
             </div>
             <div class="owl-carousel other-carousel owl-theme pt-1">
-                 @foreach (var listProduct in Model.Products)
+                @foreach (var listProduct in Model.AllProducts)
                 {
-                    <div class="item rounded-lg">
-                       @*  <div class="card ">
-                            <img src="~/imgs/imgProducts/@listProduct.ImageProduct"
-                                 class="card-img-top    " />
-                            <div class="card-body">
-                                <a href="" class="text-decoration-none">
-                                    <p class="card-title">@listProduct.NameProduct</p>
-                                </a>
-                                <p class="card-text text-price">@listProduct.PriceProduct</p>
-                            </div>
-                        </div> *@
-                        <div class="card rounded-lg card-product-today-recommend">
-                            <img src="~/imgs/imgProducts/@listProduct.ImageProduct" class="card-img-top" alt="Product 1">
-                            <div class="card-body">
-                                <h5 class="card-title">Product 1</h5>
-                                <p class="card-text text-price">1200000</p>
-                            </div>
-                        </div>
+                <div class="card item-card-flashsale ">
+                    <div class="card-img-top-container">
+                            <img src="~/imgs/imgProducts/@listProduct.ImageProduct" class="card-img-top img-fluid px-1 py-2" alt="Product Image">
                     </div>
-                }
+                    <div class="card-body">
+                        <a href="#" class="text-decoration-none">
+                                <p class="card-title py-0"> @listProduct.NameProduct</p>
+                        </a>
+                            <h6 class="card-text text-price py-0">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @listProduct.PriceProduct) </h6>
+                            <p><del>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @listProduct.Discount)</del> @* <span class="badge badge-danger">-14%</span> *@</p>
+                        <div>
+                            <p class="my-0">Model:&nbsp;@listProduct.Model</p>
+                                <p class="my-1">Xuất xứ:&nbsp; @listProduct.Origin</p>
+                                <p class="my-1">Nhà sản xuất:&nbsp; @listProduct.Producer</p>
+
+                        </div>
+
+
+                    </div>
+                </div>
+              }
+                <!-- Thêm nhiều sản phẩm hơn nếu cần -->
             </div>
+            <style>
 
-          
-
-
-
+            </style>
         </div>
     </div>
 </section>
@@ -152,55 +152,32 @@
 <section class="product spad bg-light py-2">
     <div class="container px-0">
         <h2 class="mb-4 text-color-title font-weight-bold">Gợi ý hôm nay</h2>
-        <div class="row">
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4 ">
-                <div class="card rounded-lg card-product-today-recommend">
-                    <img src="img/10054793-tu-lanh-samsung-inverter-rt22m4040dx-sv-1.jpg" class="card-img-top" alt="Product 1">
+        <div class="row px-2">
+            @foreach (var randomProducts in Model.RandomProducts) {
+                <div class="col-lg-3 p-2">
+                    <div class="card item-card-flashsale">
+                    <div class="card-img-top-container">
+                            <img src="~/imgs/imgProducts/@randomProducts.ImageProduct" class="card-img-top img-fluid p-3" alt="Product Image">
+                    </div>
                     <div class="card-body">
-                        <h5 class="card-title">Product 1</h5>
-                        <p class="card-text text-price">1200000</p>
+                        <a href="#" class="text-decoration-none">
+                            <p class="card-title">@randomProducts.NameProduct</p>
+                        </a>
+                            <h6 class="card-text text-price my-0 py-1">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @randomProducts.PriceProduct) </h6>
+                            <p class="py-0"><del>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @randomProducts.Discount)</del> @* <span class="badge badge-danger">-14%</span> *@</p>
+
+                        <div>
+                                <p class="my-0">Model:&nbsp;@randomProducts.Model</p>
+                                <p class="my-1">Xuất xứ:&nbsp; @randomProducts.Origin</p>
+                                <p class="my-1">Nhà sản xuất:&nbsp; @randomProducts.Producer</p>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4 ">
-                <div class="card rounded-lg card-product-today-recommend">
-                    <img src="img/10054793-tu-lanh-samsung-inverter-rt22m4040dx-sv-1.jpg" class="card-img-top" alt="Product 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Product 1</h5>
-                        <p class="card-text text-price">1200000</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4 ">
-                <div class="card rounded-lg card-product-today-recommend">
-                    <img src="img/10054793-tu-lanh-samsung-inverter-rt22m4040dx-sv-1.jpg" class="card-img-top" alt="Product 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Product 1</h5>
-                        <p class="card-text text-price">1200000</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4 ">
-                <div class="card rounded-lg card-product-today-recommend">
-                    <img src="img/10054793-tu-lanh-samsung-inverter-rt22m4040dx-sv-1.jpg" class="card-img-top" alt="Product 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Product 1</h5>
-                        <p class="card-text text-price">1200000</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4 ">
-                <div class="card rounded-lg card-product-today-recommend">
-                    <img src="img/10054793-tu-lanh-samsung-inverter-rt22m4040dx-sv-1.jpg" class="card-img-top" alt="Product 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Product 1</h5>
-                        <p class="card-text text-price">1200000</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Thêm các cột col-md-4 / col-lg-3 khác nếu cần -->
+            }
         </div>
     </div>
 </section>
 
-
+<!--end product today  recommend-->

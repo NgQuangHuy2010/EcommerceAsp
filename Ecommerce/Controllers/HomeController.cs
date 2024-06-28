@@ -9,13 +9,17 @@ namespace Ecommerce.Controllers
         public EcommerceContext db = new EcommerceContext();
         public IActionResult Index()
         {
+            var random = new Random();
+
             var viewModel = new HomeViewModel
             {
                 Category = db.Category.Take(12).ToList(),
-                Products = db.Products.ToList()
+                AllProducts = db.Products.ToList(),
+                RandomProducts = db.Products.ToList().OrderBy(x => random.Next()).Take(12).ToList()
             };
 
             return View(viewModel);
         }
+
     }
 }

@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-﻿@model Ecommerce.ModelsView.ProductsViewModel;
 
-=======
-﻿@model Ecommerce.Models.Product;
->>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
+@model Ecommerce.ModelsView.ProductsViewModel;
+
 @{
     ViewData["Title"] = "edit";
     Layout = "~/Areas/System/Views/Layout/Admin.cshtml";
@@ -29,197 +26,173 @@
                         <form class="" asp-action="edit" method="post" enctype="multipart/form-data">
                             <input type="hidden" asp-for="Id" />
                             @Html.AntiForgeryToken()
-                            <div>
-
-                                <section>
-                                    <div class="row">
-                                        <div class="col-lg-6 mb-4">
-                                            <div class="form-group">
-                                                <h5><label class="text-label">Tên sản phẩm </label></h5>
-                                                <input type="text" asp-for="NameProduct" class="form-control" />
-                                                <span class="text-danger" asp-validation-for="NameProduct"></span>
-
-
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 mb-4">
-                                            <h5><label class="text-label">Danh mục</label></h5>
-                                            @* Sử dụng ViewBag.Categories từ controller để load các option trong selected tương với danh mục đc chọn *@
-                                            <select asp-for="IdCategory" class="form-control" asp-items="ViewBag.Categories">
-                                                <option value="">Chọn danh mục...</option>
-                                            </select>
-                                            <span class="text-danger" asp-validation-for="IdCategory"></span>
-
-
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 mb-4">
-                                            <div class="form-group">
-                                                <h5>
-<<<<<<< HEAD
-                                                    <label class="text-label">Cập nhật ảnh mới</label></h5>
-=======
-                                                    <label class="text-label">Hình ảnh sản phẩm</label></h5>
->>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
-                                                        <input id="single-file-input" asp-for="NameImage" type="file"
-                                                               class="form-control" />
-                                            </div>
-                                            <span class="text-danger" asp-validation-for="NameImage"></span>
-
-                                        </div>
-<<<<<<< HEAD
-                                    </div>
-
-
-                                        <!-- Hiển thị hình ảnh đã tải lên -->
-                                        <div class="row">
-                                        <div class="col-lg-6 mb-4">
-
-                                        @if (ViewBag.ImagePath != null)
-                                        {
-                                            <div class="form-group">
-                                                <h5>
-                                                    <label class="text-label">Hình ảnh hiện tại</label>
-                                                </h5>
-                                                <br />
-                                                    <img src="@ViewBag.ImagePath" alt="Product Image" style="max-width: 200px; margin-top: 10px;" />
-                                                    
-                                            </div>
-                                        }
-                                        </div>
-                                        <div class="col-lg-6 mb-4 ">
-                                            <h5><label class="text-label">Hình ảnh mới</label></h5>
-                                            <div  id="single-preview"></div>
-                                        </div>
-                                    </div>
-
-                                    
-
-=======
-                                        <div class="col-lg-6 my-4" id="single-preview"></div>
-
-                                    </div>
-
->>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
-
-                                    <div class="row">
-                                        <div class="col-lg-6 mb-4">
-                                            <div class="form-group">
-                                                <h5> <label class="text-label">Giá sản phẩm</label></h5>
-                                                <div class="input-group">
-                                                    <input asp-for="PriceProduct"
-                                                           class="form-control" type="number" />
-                                                </div>
-                                            </div>
-                                            <span class="text-danger" asp-validation-for="PriceProduct"></span>
-
-                                        </div>
-                                        <div class="col-lg-6 mb-4">
-                                            <div class="form-group">
-                                                <h5><label class="text-label">Giá giảm</label></h5>
-                                                <div class="input-group">
-                                                    <input asp-for="Discount" type="number"
-                                                           class="form-control" />
-                                                    <span class="text-danger" asp-validation-for="Discount"></span>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="col-lg-12 mb-4">
+                            <section>
+                                <div class="row">
+                                    <div class="col-lg-6 mb-4">
                                         <div class="form-group">
-                                            <h5>     <label class="text-label">Nội dung chi tiết</label></h5>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" asp-for="Description" />
-                                                <span class="text-danger" asp-validation-for="Description"></span>
+                                            <h5><label class="text-label">Tên sản phẩm </label></h5>
+                                            <input type="text" asp-for="NameProduct" class="form-control" />
+                                            <span class="text-danger" asp-validation-for="NameProduct"></span>
 
-                                                @*  <textarea class="form-control" name="content" id="content" cols="30" rows="10"></textarea>
-                                                <script>   CKEDITOR.replace('content');</script>
-                                                {!!$errors->first('datecreate', '<div class="has-error text-danger">:message</div>')!!} *@
-                                            </div>
+
                                         </div>
                                     </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <h5><label class="text-label">Danh mục</label></h5>
+                                        @* Sử dụng ViewBag.Categories từ controller để load các option trong selected tương với danh mục đc chọn *@
+                                        <select asp-for="IdCategory" class="form-control" asp-items="ViewBag.Categories">
+                                            <option value="">Chọn danh mục...</option>
+                                        </select>
+                                        <span class="text-danger" asp-validation-for="IdCategory"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 mb-4">
+                                        <div class="form-group">
+                                            <h5>
 
-
-                                    <div class="row">
-
-                                        <div class="col-lg-4 mb-4">
-                                            <div class="form-group">
-                                                <h5><label class="text-label">Model</label></h5>
-                                                <input type="text" class="form-control" asp-for="Model" />
-                                                <span class="text-danger" asp-validation-for="Model"></span>
-                                            </div>
+                                                <label class="text-label">Cập nhật ảnh mới</label>
+                                            </h5>
+                                            <input id="single-file-input" asp-for="NameImage" type="file"
+                                                   class="form-control" />
+                           
                                         </div>
-                                        <div class="col-lg-4 mb-4">
-                                            <h5><label class="text-label">Nhà sản xuất </label></h5>
-                                            <input type="text" class="form-control" asp-for="Producer" />
-                                            <span class="text-danger" asp-validation-for="Producer"></span>
+                                        <span class="text-danger" asp-validation-for="NameImage"></span>
+
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="row">
+                                <div class="col-lg-6 mb-4">
+
+                                    @if (ViewBag.ImagePath != null)
+                                    {
+                                        <div class="form-group">
+                                            <h5> <label class="text-label">Hình ảnh hiện tại</label> </h5>
+                                            <br />
+                                            <img src="@ViewBag.ImagePath" alt="Product Image" style="max-width: 200px; margin-top: 10px;" />
 
                                         </div>
-                                        <div class="col-lg-4 mb-4">
-                                            <div class="form-group">
-                                                <h5><label class="text-label">Nguồn gốc</label></h5>
-                                                <input type="text" class="form-control" asp-for="Origin" />
-                                                <span class="text-danger" asp-validation-for="Origin"></span>
+                                    }
+                                </div>
+                                <div class="col-lg-6 mb-4 ">
+                                    <h5><label class="text-label">Hình ảnh mới</label></h5>
+                                    <div id="single-preview"></div>
 
+                                </div>
 
-                                            </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <h5> <label class="text-label">Giá sản phẩm</label></h5>
+                                        <div class="input-group">
+                                            <input asp-for="PriceProduct"
+                                                   class="form-control" type="number" />
                                         </div>
                                     </div>
+                                    <span class="text-danger" asp-validation-for="PriceProduct"></span>
 
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <h5><label class="text-label">Giá giảm</label></h5>
+                                        <div class="input-group">
+                                            <input asp-for="Discount" type="number"
+                                                   class="form-control" />
+                                            <span class="text-danger" asp-validation-for="Discount"></span>
 
-
-
-                                    <div class="col-lg-12 mb-4">
-                                        <fieldset class="form-group">
-                                            <div class="row">
-                                                <h5> <label class="col-form-label col-sm-12 pt-0">Trạng thái</label></h5>
-                                                <div class="col-sm-10">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" asp-for="Status" value="1" checked>
-
-                                                        <label class="form-check-label">
-                                                            Mở
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" asp-for="Status" value="0">
-
-                                                        <label class="form-check-label">
-                                                            Khóa
-                                                        </label>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </fieldset>
+                                        </div>
                                     </div>
-                                </section>
-
-                                <div class="text-left mt-4 mb-5">
-                                    <button class="btn btn-primary btn-sl-sm mr-3" type="submit">
-                                        <span class="mr-2"><i class="fa fa-paper-plane"></i></span> Thêm
-                                    </button>
-                                    <a class="btn btn-dark btn-sl-sm" asp-action="index">
-                                        <span class="mr-2">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </span> Quay về
-                                    </a>
                                 </div>
                             </div>
-                        </form>
+
+                            <div class="col-lg-12 mb-4">
+                                <div class="form-group">
+                                    <h5>     <label class="text-label">Nội dung chi tiết</label></h5>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" asp-for="Description" />
+                                        <span class="text-danger" asp-validation-for="Description"></span>
+
+                                        @*  <textarea class="form-control" name="content" id="content" cols="30" rows="10"></textarea>
+                                        <script>   CKEDITOR.replace('content');</script>
+                                        {!!$errors->first('datecreate', '<div class="has-error text-danger">:message</div>')!!} *@
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+
+                                <div class="col-lg-4 mb-4">
+                                    <div class="form-group">
+                                        <h5><label class="text-label">Model</label></h5>
+                                        <input type="text" class="form-control" asp-for="Model" />
+                                        <span class="text-danger" asp-validation-for="Model"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 mb-4">
+                                    <h5><label class="text-label">Nhà sản xuất </label></h5>
+                                    <input type="text" class="form-control" asp-for="Producer" />
+                                    <span class="text-danger" asp-validation-for="Producer"></span>
+
+                                </div>
+                                <div class="col-lg-4 mb-4">
+                                    <div class="form-group">
+                                        <h5><label class="text-label">Nguồn gốc</label></h5>
+                                        <input type="text" class="form-control" asp-for="Origin" />
+                                        <span class="text-danger" asp-validation-for="Origin"></span>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-12 mb-4">
+                                <fieldset class="form-group">
+                                    <div class="row">
+                                        <h5> <label class="col-form-label col-sm-12 pt-0">Trạng thái</label></h5>
+                                        <div class="col-sm-10">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" asp-for="Status" value="1" checked>
+
+                                                <label class="form-check-label">
+                                                    Mở
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" asp-for="Status" value="0">
+
+                                                <label class="form-check-label">
+                                                    Khóa
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div class="text-left mt-4 mb-5">
+                                <button class="btn btn-primary btn-sl-sm mr-3" type="submit">
+                                    <span class="mr-2"><i class="fa fa-paper-plane"></i></span> Thêm
+                                </button>
+                                <a class="btn btn-dark btn-sl-sm" asp-action="index">
+                                    <span class="mr-2">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </span> Quay về
+                                </a>
+                            </div>
+                        </form>                      
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<<<<<<< HEAD
  @* cần thêm @RenderSection("Scripts", required: false) ở layout ,*@
  @* đoạn @section script này dùng để validation ngay khi người dùng bỏ trống input nhấn submit ko reload trang *@
 @section Scripts {
@@ -227,8 +200,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-=======
->>>>>>> 101e266e682a9f454783cb6fa74cb6dddb69cb7a
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.6.2/js/dropify.min.js"></script>
 <script>
     document.getElementById('single-file-input').addEventListener('change', function (event) {
