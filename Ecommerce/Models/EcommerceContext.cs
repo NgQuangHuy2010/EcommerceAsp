@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Models;
 
@@ -46,6 +44,7 @@ public partial class EcommerceContext : DbContext
                 .HasColumnName("discount");
             entity.Property(e => e.IdCategory).HasColumnName("idCategory");
             entity.Property(e => e.ImageProduct).HasColumnName("image_product");
+            entity.Property(e => e.ImageSpecifications).HasColumnName("image_specifications");
             entity.Property(e => e.Model)
                 .HasMaxLength(50)
                 .HasColumnName("model");
@@ -60,7 +59,6 @@ public partial class EcommerceContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("producer");
             entity.Property(e => e.Status).HasColumnName("status");
-           
 
             entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.Products)
                 .HasForeignKey(d => d.IdCategory)

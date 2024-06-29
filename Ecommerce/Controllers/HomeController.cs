@@ -11,15 +11,19 @@ namespace Ecommerce.Controllers
         {
             var random = new Random();
 
+            // Tạo view model
             var viewModel = new HomeViewModel
             {
                 Category = db.Category.Take(12).ToList(),
                 AllProducts = db.Products.ToList(),
-                RandomProducts = db.Products.ToList().OrderBy(x => random.Next()).Take(12).ToList()
+                RandomProducts = db.Products.AsEnumerable().OrderBy(x => random.Next()).Take(12).ToList(),
             };
 
             return View(viewModel);
         }
+
+
+
 
     }
 }

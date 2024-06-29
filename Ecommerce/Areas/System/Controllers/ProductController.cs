@@ -69,6 +69,7 @@ namespace Ecommerce.Areas.System.Controllers
                     IdCategory = product.IdCategory,
                     NameProduct = product.NameProduct,
                     ImageProduct = UploadImage(product),
+                    ImageSpecifications = UploadImage(product),
                     Description = product.Description,
                     PriceProduct = product.PriceProduct,
                     Discount = product.Discount,
@@ -136,6 +137,7 @@ namespace Ecommerce.Areas.System.Controllers
                 Origin = product.Origin,
                 Status = product.Status,
                 ImageProduct = product.ImageProduct,
+                ImageSpecifications = product.ImageSpecifications,
             };
 
             // Lấy danh sách danh mục trong category bằng seleclist để hiện ra view bằng viewbag
@@ -195,9 +197,18 @@ namespace Ecommerce.Areas.System.Controllers
                             {
                                 _fileSystem.File.Delete(filepath);  //xóa ảnh cũ nếu có ảnh mới dc cập nhật
                             }
+                            if (load.ImageSpecifications != null)
+                            {
+                                string filepathImageSpecifications = Path.Combine(environment.WebRootPath, "imgs/imgProducts", load.ImageSpecifications);
+                                if (_fileSystem.File.Exists(filepathImageSpecifications))
+                                {
+                                    _fileSystem.File.Delete(filepathImageSpecifications);  //xóa ảnh cũ nếu có ảnh mới dc cập nhật
+                                }
+                            }
                         }
                         string tenhinh = UploadImage(products);
                         load.ImageProduct = tenhinh;
+                        load.ImageSpecifications = tenhinh;
                     }
                     // Cập nhật các trường khác
                     load.Description = products.Description;

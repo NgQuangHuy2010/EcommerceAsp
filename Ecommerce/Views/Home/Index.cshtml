@@ -83,7 +83,8 @@
                 @foreach (var listCategory in Model.Category)
                 {
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6 category-item-test bg-white my-3 mx-0 px-0 text-center">
-                        <a href="" class="text-decoration-none">
+                       @*  get id của category lên url  *@
+                        <a asp-controller="Products" asp-action="Products" asp-route-id="@listCategory.Id" class="text-decoration-none">
                         <div class="circle mx-auto mb-2">
                                 <img src="~/imgs/imgCategory/@listCategory.Image"
                                  alt=""
@@ -121,7 +122,7 @@
                             <img src="~/imgs/imgProducts/@listProduct.ImageProduct" class="card-img-top img-fluid px-1 py-2" alt="Product Image">
                     </div>
                     <div class="card-body">
-                        <a href="#" class="text-decoration-none">
+                            <a asp-action="ProductDetails" asp-controller="Products" asp-route-id="@listProduct.Id" class="text-decoration-none">
                                 <p class="card-title py-0"> @listProduct.NameProduct</p>
                         </a>
                             <h6 class="card-text text-price py-0">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @listProduct.PriceProduct) </h6>
@@ -160,7 +161,7 @@
                             <img src="~/imgs/imgProducts/@randomProducts.ImageProduct" class="card-img-top img-fluid p-3" alt="Product Image">
                     </div>
                     <div class="card-body">
-                        <a href="#" class="text-decoration-none">
+                            <a asp-action="ProductDetails" asp-controller="Products" asp-route-id="@randomProducts.Id" class="text-decoration-none">
                             <p class="card-title">@randomProducts.NameProduct</p>
                         </a>
                             <h6 class="card-text text-price my-0 py-1">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @randomProducts.PriceProduct) </h6>

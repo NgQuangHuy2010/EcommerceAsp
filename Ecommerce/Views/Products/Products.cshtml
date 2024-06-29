@@ -4,7 +4,7 @@
     Layout = "~/Views/LayoutUser/LayoutUser.cshtml";
 }
 <section class="shop spad">
-    <div class="container">
+    <div class="container container-product"  >
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="shop__sidebar">
@@ -16,17 +16,16 @@
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
                                     <div class="card-heading active">
-                                        <a data-toggle="collapse" data-target="#collapseOne">Women</a>
+                                        <a data-toggle="collapse" data-target="#collapseOne">Danh mục sản phẩm</a>
                                     </div>
                                     <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <ul>
-                                                <li><a href="#">Coats</a></li>
-                                                <li><a href="#">Jackets</a></li>
-                                                <li><a href="#">Dresses</a></li>
-                                                <li><a href="#">Shirts</a></li>
-                                                <li><a href="#">T-shirts</a></li>
-                                                <li><a href="#">Jeans</a></li>
+                                                @foreach (var category in Model.Categories)
+                                                {
+                                                    <li><a asp-controller="Products" asp-action="Products" asp-route-id="@category.Id">@category.Name</a></li>
+
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -134,28 +133,30 @@
             </div>
             <div class="col-lg-9 col-md-9">
                 <div class="row">
+                    @foreach (var product in Model.Products)
+                    {
                     <div class="col-lg-3 p-2">
                         <div class="card item-card-flashsale">
                             <div class="card-img-top-container">
-                                @* <img src="~/imgs/imgProducts/@randomProducts.ImageProduct" class="card-img-top img-fluid p-3" alt="Product Image"> *@
+                                    <img src="~/imgs/imgProducts/@product.ImageProduct" class="card-img-top img-fluid p-3" alt="Product Image">
                             </div>
                             <div class="card-body">
-                                <a href="#" class="text-decoration-none">
-                                    <p class="card-title">@* @randomProducts.NameProduct *@</p>
+                                    <a asp-action="ProductDetails" asp-controller="Products" asp-route-id="@product.Id" class="text-decoration-none">
+                                        <p class="card-title">@product.NameProduct</p>
                                 </a>
-                                <h6 class="card-text text-price my-0 py-1">@* @string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @randomProducts.PriceProduct) *@ </h6>
-                                <p class="py-0"><del>@* @string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @randomProducts.Discount) *@</del> @* <span class="badge badge-danger">-14%</span> *@</p>
+                                    <h6 class="card-text text-price my-0 py-1">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @product.PriceProduct) </h6>
+                                    <p class="py-0"><del>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @product.Discount)</del> @* <span class="badge badge-danger">-14%</span> *@</p>
 
                                 <div>
-                                 @*    <p class="my-0">Model:&nbsp;@randomProducts.Model</p>
-                                    <p class="my-1">Xuất xứ:&nbsp; @randomProducts.Origin</p>
-                                    <p class="my-1">Nhà sản xuất:&nbsp; @randomProducts.Producer</p> *@
+                                        <p class="my-0">Model:&nbsp;@product.Model</p>
+                                        <p class="my-1">Xuất xứ:&nbsp; @product.Origin</p>
+                                        <p class="my-1">Nhà sản xuất:&nbsp; @product.Producer</p>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    
+                    }
                     <!-- Thêm các cột col-md-4 / col-lg-3 khác nếu cần -->
                 </div>
             </div>

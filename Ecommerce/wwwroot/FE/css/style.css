@@ -1,3 +1,5 @@
+
+
 /* page home */
 .category-item {
   text-align: center;
@@ -49,13 +51,18 @@
 /*flash sale*/
 .item-card-flashsale {
     border: 1px solid #e0e0e0;
-    border-radius: 15px;
+  
     overflow: hidden; /* Ensure the content doesn't overflow the card */
     height: 500px; /* Fixed height for the card */
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
-
+.item-card-flashsale:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
 .text-price {
     color: #ed3324;
     font-weight: 700;
@@ -115,8 +122,7 @@
     }
 
 .card-text {
-    height: 20px; /* Fixed height for the text */
-    overflow: hidden;
+  
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -2150,7 +2156,7 @@ ol {
   position: absolute;
   left: 0;
   top: 13px;
-  height: 1px;
+  height: 2px;
   width: 335px;
   background: #e1e1e1;
   content: "";
@@ -2160,7 +2166,7 @@ ol {
   position: absolute;
   right: 0;
   top: 13px;
-  height: 1px;
+  height: 2px;
   width: 335px;
   background: #e1e1e1;
   content: "";
@@ -2890,11 +2896,16 @@ ol {
   .container {
     max-width: 1170px ;
   }
-  .header__logo {
-    display: flex;
-    justify-content: center;
+ @media only screen and (min-width: 1200px) {
+ .container-product {
+   max-width: 1346px !important;
   }
-}
+
+        .header__logo {
+            display: flex;
+            justify-content: center;
+        }
+    }
 
 /* Medium Device = 1200px */
 

@@ -1,4 +1,4 @@
-using Ecommerce.Models;
+﻿using Ecommerce.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,9 +25,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+//cấu hình route product khi nhấn vào danh mục từ trang home
+app.MapControllerRoute(
+    name: "product",
+    pattern: "product/{id}",
+    defaults: new { controller = "Products", action = "Products" });
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
 
 app.Run();

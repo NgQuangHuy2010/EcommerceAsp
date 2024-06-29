@@ -36,6 +36,7 @@ namespace Ecommerce.ModelsView
 
         public string? Origin { get; set; }
 
+        public string? ImageSpecifications { get; set; }
         public virtual Category? IdCategoryNavigation { get; set; }
 
 
