@@ -51,6 +51,17 @@ namespace Ecommerce.Areas.System.Controllers
                     ModelState.AddModelError("NameImage", "Chỉ chấp nhận các tệp có đuôi: " + string.Join(", ", allowedExtensions));
                 }
             }
+
+            if (product.NameImageSpecifications != null)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var fileExtension = Path.GetExtension(product.NameImageSpecifications.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("NameImage", "Chỉ chấp nhận các tệp có đuôi: " + string.Join(", ", allowedExtensions));
+                }
+            }
             if (ModelState.IsValid)
             {
                 //Sử dụng FirstOrDefault để tìm một danh mục với Id bằng với IdCategory của sản phẩm.
@@ -69,7 +80,7 @@ namespace Ecommerce.Areas.System.Controllers
                     IdCategory = product.IdCategory,
                     NameProduct = product.NameProduct,
                     ImageProduct = UploadImage(product),
-                    ImageSpecifications = UploadImage(product),
+                    ImageSpecifications = UploadImageSpecifications(product),
                     Description = product.Description,
                     PriceProduct = product.PriceProduct,
                     Discount = product.Discount,
@@ -91,6 +102,23 @@ namespace Ecommerce.Areas.System.Controllers
         }
 
 
+        public string UploadImageSpecifications(ProductsViewModel pro)
+        {
+            string name_image_specifications = string.Empty;
+            if (pro.NameImageSpecifications != null)
+            {
+                string uploadFolder = Path.Combine(environment.WebRootPath, "imgs/imgProducts");
+                // Sử dụng GUID để tạo tên tệp duy nhất cho file img
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + pro.NameImageSpecifications.FileName;
+                string filePath = Path.Combine(uploadFolder, uniqueFileName);
+                using (var filestream = new FileStream(filePath, FileMode.Create))
+                {
+                    pro.NameImageSpecifications.CopyTo(filestream);
+                }
+                name_image_specifications = uniqueFileName; // Lưu tên tệp duy nhất vào cơ sở dữ liệu
+            }
+            return name_image_specifications;
+        }
         public string UploadImage(ProductsViewModel pro)
         {
             string name_image = string.Empty;
@@ -108,7 +136,6 @@ namespace Ecommerce.Areas.System.Controllers
             }
             return name_image;
         }
-
 
         [Route("edit")]
         public IActionResult Edit(int? id)
@@ -145,22 +172,23 @@ namespace Ecommerce.Areas.System.Controllers
             ViewBag.Categories = new SelectList(categories, "Id", "Name", product.IdCategory);
             //lấy đường dẫn hình ảnh để hiện hình ảnh ra view để biết hình ảnh hiện tại là hình gì
             ViewBag.ImagePath = GetImagePath(product.ImageProduct);
+            ViewBag.ImagePathSpecifications = GetImagePath(product.ImageSpecifications);
             // Trả về view Edit với ProductsViewModel
             return View(productsViewModel);
         }
 
-        private string GetImagePath(string imageProduct) //hàm get hình ảnh 
+        private string GetImagePath(string imageFileName)
         {
-            if (string.IsNullOrEmpty(imageProduct))
+            if (string.IsNullOrEmpty(imageFileName))
             {
                 return "Không có hình ảnh";
             }
 
             // Đường dẫn đầy đủ đến thư mục chứa hình ảnh
-            var imagePath = Path.Combine("/imgs/imgProducts", imageProduct);
-
+            var imagePath = Path.Combine("/imgs/imgProducts", imageFileName);
             return imagePath;
         }
+
 
 
         [Route("edit")]
@@ -171,6 +199,9 @@ namespace Ecommerce.Areas.System.Controllers
             //tìm id của category và đưa đường dẫn vào viewbag để luôn hiện hình ảnh của id đó thông qua GetImagePath 
             var product = db.Products.Find(id);
             ViewBag.ImagePath = GetImagePath(product.ImageProduct);
+            ViewBag.ImagePathSpecifications = GetImagePath(product.ImageSpecifications);
+
+
             //kiểm tra xem đúng định dạng file ảnh không
             if (products.NameImage != null)
             {
@@ -182,12 +213,22 @@ namespace Ecommerce.Areas.System.Controllers
                     ModelState.AddModelError("NameImage", "Chỉ chấp nhận các tệp có đuôi: " + string.Join(", ", allowedExtensions));
                 }
             }
+            if (products.NameImageSpecifications != null)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var fileExtension = Path.GetExtension(products.NameImageSpecifications.FileName).ToLower();
 
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("NameImageSpecifications", "Chỉ chấp nhận các tệp có đuôi: " + string.Join(", ", allowedExtensions));
+                }
+            }
             if (ModelState.IsValid)
             {
                 var load = db.Products.Where(x => x.Id == id).SingleOrDefault();
                 if (load != null)
                 {
+                    //ImageProduct
                     if (products.NameImage != null)  // Nếu chọn hình mới
                     {
                         if (load.ImageProduct != null)
@@ -197,18 +238,25 @@ namespace Ecommerce.Areas.System.Controllers
                             {
                                 _fileSystem.File.Delete(filepath);  //xóa ảnh cũ nếu có ảnh mới dc cập nhật
                             }
-                            if (load.ImageSpecifications != null)
-                            {
-                                string filepathImageSpecifications = Path.Combine(environment.WebRootPath, "imgs/imgProducts", load.ImageSpecifications);
-                                if (_fileSystem.File.Exists(filepathImageSpecifications))
-                                {
-                                    _fileSystem.File.Delete(filepathImageSpecifications);  //xóa ảnh cũ nếu có ảnh mới dc cập nhật
-                                }
-                            }
                         }
                         string tenhinh = UploadImage(products);
                         load.ImageProduct = tenhinh;
+
+                    }
+                    //ImageSpecifications
+                    if (products.NameImageSpecifications != null)  // Nếu chọn hình mới
+                    {
+                        if (load.ImageSpecifications != null)
+                        {
+                            string filepath = Path.Combine(environment.WebRootPath, "imgs/imgProducts", load.ImageSpecifications);
+                            if (_fileSystem.File.Exists(filepath))
+                            {
+                                _fileSystem.File.Delete(filepath);  //xóa ảnh cũ nếu có ảnh mới dc cập nhật
+                            }
+                        }
+                        string tenhinh = UploadImageSpecifications(products);
                         load.ImageSpecifications = tenhinh;
+
                     }
                     // Cập nhật các trường khác
                     load.Description = products.Description;

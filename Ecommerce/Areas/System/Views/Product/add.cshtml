@@ -95,26 +95,21 @@
                                         <div class="form-group">
                                             <h5>
                                                 <label class="text-label">Hình ảnh thông số kỹ thuật</label></h5>
-                                                    <input id="single-file-input" asp-for="NameImage" type="file"
+                                            <input id="single-file-input" asp-for="NameImageSpecifications" type="file"
                                                            class="form-control" />
                                         </div>
-                                        <span class="text-danger" asp-validation-for="NameImage"></span>
+                                        <span class="text-danger" asp-validation-for="NameImageSpecifications"></span>
 
                                     </div>
-
-                                              @*   <div class="col-lg-12 mb-4">
+                                                <div class="col-lg-12 mb-4">
                                                     <div class="form-group">
-                                                   <h5>     <label class="text-label">Nội dung chi tiết</label></h5>
-                                                        <div class="input-group">
-                                                <input type="text" class="form-control" asp-for="Description" />
-                                                <span class="text-danger" asp-validation-for="Description"></span>
-
-                                                        <textarea class="form-control" name="content" id="content" cols="30" rows="10"></textarea>
-                                                         <script>   CKEDITOR.replace('content');</script>
-                                                        {!!$errors->first('datecreate', '<div class="has-error text-danger">:message</div>')!!}
+                                                    <h5><label class="text-label">Nội dung chi tiết</label></h5>
+                                           
+                                                <textarea id="summernote" name="editordata" asp-for="Description"></textarea>
+                                          @*       <input  /> *@
                                                         </div>
                                                     </div>
-                                                </div> *@
+                                                
 
 
                                     <div class="row">

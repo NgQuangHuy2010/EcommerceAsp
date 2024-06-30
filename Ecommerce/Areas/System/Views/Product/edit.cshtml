@@ -65,15 +65,14 @@
                             <div class="row">
                                 <div class="col-lg-6 mb-4">
 
-                                    @if (ViewBag.ImagePath != null)
-                                    {
+                                  
                                         <div class="form-group">
                                             <h5> <label class="text-label">Hình ảnh hiện tại</label> </h5>
                                             <br />
-                                            <img src="@ViewBag.ImagePath" alt="Product Image" style="max-width: 200px; margin-top: 10px;" />
+                                        <img src="@ViewBag.ImagePath" alt="Product Image" style="max-width: 200px; margin-top: 10px;" />
 
                                         </div>
-                                    }
+                                    
                                 </div>
                                 <div class="col-lg-6 mb-4 ">
                                     <h5><label class="text-label">Hình ảnh mới</label></h5>
@@ -107,30 +106,41 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 mb-4">
-                                <div class="form-group">
-                                    <h5>
-                                        <label class="text-label">Hình ảnh thông số kỹ thuật</label>
-                                    </h5>
-                                    <input id="single-file-input" asp-for="NameImage" type="file"
-                                           class="form-control" />
+
+                            <div class="row">
+                                <div class="col-lg-6 mb-4">
+                                    <div class="form-group">
+                                        <h5>
+                                            <label class="text-label">Hình ảnh thông số kỹ thuật</label>
+                                        </h5>
+                                        <input id="single-file-input" asp-for="NameImageSpecifications" type="file"
+                                               class="form-control" />
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="NameImageSpecifications"></span>
+
                                 </div>
-                                <span class="text-danger" asp-validation-for="NameImage"></span>
+                                <div class="col-lg-6 mb-4">
 
+                                  
+                                        <div class="form-group">
+                                            <h5> <label class="text-label">Hình ảnh hiện tại</label> </h5>
+                                            <br />
+                                            
+                                        <img src="@ViewBag.ImagePathSpecifications" alt="Product Image" style="max-width: 200px; margin-top: 10px;" />
+
+                                        </div>
+                                    
+                                </div>
                             </div>
-                   @*          <div class="col-lg-12 mb-4">
-                                <div class="form-group">
-                                    <h5>     <label class="text-label">Nội dung chi tiết</label></h5>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" asp-for="Description" />
-                                        <span class="text-danger" asp-validation-for="Description"></span>
 
-                                         <textarea class="form-control" name="content" id="content" cols="30" rows="10"></textarea>
-                                        <script>   CKEDITOR.replace('content');</script>
-                                        {!!$errors->first('datecreate', '<div class="has-error text-danger">:message</div>')!!}
+                            <div class="col-lg-12 mb-4">
+                                <div class="form-group">
+                                    <h5><label class="text-label">Nội dung chi tiết</label></h5>
+                                    <div>
+                                        <input class="summernote" asp-for="Description" />
                                     </div>
                                 </div>
-                            </div> *@
+                            </div>
 
 
                             <div class="row">
