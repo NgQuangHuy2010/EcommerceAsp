@@ -10,6 +10,13 @@ builder.Services.AddDbContext<EcommerceContext>(x => x.UseSqlServer(connectionSt
 //pack System.io
 builder.Services.AddSingleton<System.IO.Abstractions.IFileSystem, System.IO.Abstractions.FileSystem>();
 builder.Services.AddTransient<IEmail, Email>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +32,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseSession(); // sử dụng session
 //cấu hình route product khi nhấn vào danh mục từ trang home
 app.MapControllerRoute(
     name: "product",

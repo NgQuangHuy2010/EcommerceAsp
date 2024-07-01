@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Models;
 using Ecommerce.ModelsView;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 namespace Ecommerce.Controllers
 {
     public class ProductsController : Controller
@@ -38,6 +39,37 @@ namespace Ecommerce.Controllers
 
             return View(viewModel);
         }
+
+
+        [HttpPost]
+        public IActionResult AddToCart(int productId, string productName, decimal price, int quantity)
+        {
+            var cart = HttpContext.Session.GetString("Cart");
+            var cartItems = string.IsNullOrEmpty(cart)
+                            ? new List<CartItem>()
+                            : JsonConvert.DeserializeObject<List<CartItem>>(cart);
+
+            var existingItem = cartItems.Find(item => item.ProductId == productId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += quantity;
+            }
+            else
+            {
+                cartItems.Add(new CartItem
+                {
+                    ProductId = productId,
+                    ProductName = productName,
+                    Price = price,
+                    Quantity = quantity
+                });
+            }
+
+            HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cartItems));
+            return Json(new { success = true });
+        }
+
+
 
     }
 }

@@ -116,7 +116,7 @@
                         </div>
                         <ul class="header__right__widget">
                             <li>
-                                <a href="#">
+                                <a asp-action="Cart" asp-controller="Cart">
                                     <span class="icon_cart_alt"></span>
                                     <div class="tip">2</div>
                                 </a>
@@ -220,5 +220,6 @@
     <!-- <script src="jquery.min.js"></script> -->
     <script src="~/FE/owlcarousel/owl.carousel.min.js"></script>
     <script src="~/FE/js/owlcarousel.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

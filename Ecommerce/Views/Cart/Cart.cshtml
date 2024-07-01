@@ -1,0 +1,81 @@
+﻿@using Ecommerce.ModelsView;
+@model List<CartItem>;
+
+@{
+    ViewData["Title"] = "Cart";
+    Layout = "~/Views/LayoutUser/LayoutUser.cshtml";
+}
+
+
+
+
+<div class="container-fluid pt-5">
+    <div class="row px-5">
+        <div class="col-lg-8 table-responsive mb-5">
+            <table class="table table-bordered text-center mb-0">
+                <thead class="text-dark">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng giá</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="align-middle">@item.ProductName</td>
+                            <td class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.Price)</td>
+                            <td class="align-middle">
+                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                    <input type="number" class="form-control form-control-sm" value="@item.Quantity" name="quantity" onchange="updatecart(this)">
+                                </div>
+                            </td>
+                            <td class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.TotalPrice)</td>
+                            <td class="align-middle">
+                                <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <form class="mb-5" action="">
+                <div class="input-group">
+                    <input type="text" class="form-control p-4" placeholder="Mã giảm giá">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary">Thêm mã giảm giá</button>
+                    </div>
+                </div>
+            </form>
+            <div class="card border-secondary mb-5">
+                <div class="card-header border-0">
+                    <h4 class="font-weight-semi-bold m-0">Chi tiết giỏ hàng</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">Tạm tính</h6>
+                        <h6 class="font-weight-medium">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", Model.Sum(item => item.TotalPrice))</h6>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="font-weight-medium">Phí vận chuyển</h6>
+                        <h6 class="font-weight-medium">0</h6>
+                    </div>
+                </div>
+                <div class="card-footer border-secondary bg-transparent">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h6 class="font-weight-bold text-danger">Tổng tiền thanh toán</h6>
+                        <h5 class="font-weight-bold text-danger">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", Model.Sum(item => item.TotalPrice))</h5>
+                    </div>
+                    <a href="#" class="btn btn-block btn-danger my-3 py-3">Tiến hành thanh toán</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

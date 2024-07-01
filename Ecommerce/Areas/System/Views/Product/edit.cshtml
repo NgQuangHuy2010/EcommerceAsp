@@ -136,9 +136,7 @@
                             <div class="col-lg-12 mb-4">
                                 <div class="form-group">
                                     <h5><label class="text-label">Nội dung chi tiết</label></h5>
-                                    <div>
-                                        <input class="summernote" asp-for="Description" />
-                                    </div>
+                                    <textarea id="summernote" name="Description" asp-for="Description" class="form-control"></textarea>
                                 </div>
                             </div>
 
@@ -213,12 +211,21 @@
         </div>
     </div>
 </div>
+
  @* cần thêm @RenderSection("Scripts", required: false) ở layout ,*@
  @* đoạn @section script này dùng để validation ngay khi người dùng bỏ trống input nhấn submit ko reload trang *@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                height: 300
+            });
+        });
+    </script>
 }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropify/0.6.2/js/dropify.min.js"></script>
@@ -242,3 +249,4 @@
         reader.readAsDataURL(file);
     });
 </script>
+
