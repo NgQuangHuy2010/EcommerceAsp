@@ -2,10 +2,10 @@
 {
     public class CartItem
     {
-        public int ProductId { get; set; }
+        public int Id { get; set; } // Sử dụng "Id" thay vì "ProductId"
         public string ProductName { get; set; }
-        public decimal Price { get; set; }
+        public decimal ProductPrice { get; set; }
         public int Quantity { get; set; }
-        public decimal TotalPrice => Price * Quantity;
+        public decimal TotalPrice => ProductPrice * Quantity;
     }
 }

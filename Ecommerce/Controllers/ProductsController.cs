@@ -40,34 +40,36 @@ namespace Ecommerce.Controllers
             return View(viewModel);
         }
 
-
         [HttpPost]
-        public IActionResult AddToCart(int productId, string productName, decimal price, int quantity)
+        [Route("Cart/AddToCart")]
+        public IActionResult AddToCart(int productId, string productName, decimal productPrice, int quantity)
         {
-            var cart = HttpContext.Session.GetString("Cart");
-            var cartItems = string.IsNullOrEmpty(cart)
-                            ? new List<CartItem>()
-                            : JsonConvert.DeserializeObject<List<CartItem>>(cart);
+            List<CartItem>? cart = HttpContext.Session.GetString("Cart") != null
+                ? JsonConvert.DeserializeObject<List<CartItem>>(HttpContext.Session.GetString("Cart"))
+                : new List<CartItem>();
 
-            var existingItem = cartItems.Find(item => item.ProductId == productId);
+            var existingItem = cart.FirstOrDefault(item => item.Id == productId);
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
             }
             else
             {
-                cartItems.Add(new CartItem
+                cart.Add(new CartItem
                 {
-                    ProductId = productId,
+                    Id = productId,
                     ProductName = productName,
-                    Price = price,
+                    ProductPrice = productPrice,
                     Quantity = quantity
                 });
             }
 
-            HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cartItems));
-            return Json(new { success = true });
+            HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
+
+            return Json(new { success = true, message = "Product added to cart." });
         }
+
+
 
 
 

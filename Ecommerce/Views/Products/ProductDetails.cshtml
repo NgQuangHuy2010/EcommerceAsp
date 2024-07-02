@@ -24,10 +24,10 @@
                     </div>
                 </div>
             </div>
-           
+
             <div class="col-lg-5">
                 <div class="product__details__text">
-                    <h3>@Model.Details.NameProduct</h3>
+                    <h3 id="productName">@Model.Details.NameProduct</h3>
                     <div class="rating">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
@@ -36,9 +36,11 @@
                         <i class="fa fa-star"></i>
                         <span>( 138 reviews )</span>
                     </div>
-                    <div class="product__details__price">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @Model.Details.PriceProduct) <span>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @Model.Details.Discount)</span></div>
-                    
-                    <div class="product__details__button ">
+                    <div class="product__details__price" id="productPrice" data-price="@Model.Details.PriceProduct">
+                        @string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @Model.Details.PriceProduct)
+                        <span>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", @Model.Details.Discount)</span>
+                    </div>
+                    <div class="product__details__button">
                         <div class="quantity">
                             <span>Quantity:</span>
                             <div class="pro-qty">
@@ -46,8 +48,10 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#" class=" btn btn-danger mr-4"><span class="icon_bag_alt"></span> Mua ngay</a>
-                    <a  id="addToCart" class=" btn bg-white text-danger border border-danger"><span class="icon_cart_alt text-danger"></span> Thêm vào giỏ hàng</a>
+                    <a href="#" class="btn btn-danger mr-4"><span class="icon_bag_alt"></span> Mua ngay</a>
+                    <a id="addToCart" data-product-id="@Model.Details.Id" class="btn bg-white text-danger border border-danger">
+                        <span class="icon_cart_alt text-danger"></span> Thêm vào giỏ hàng
+                    </a>
                 </div>
             </div>
             
@@ -187,36 +191,35 @@
     </div>
 </section>
 <!-- Product Details Section End -->
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $('#addToCart').on('click', function (e) {
-                e.preventDefault();
-                var productId = @Model.Details.Id;
-                var productName = encodeURIComponent('@Html.Raw(Model.Details.NameProduct)');
 
-                var price = @Model.Details.PriceProduct;
-                var quantity = $('#quantity').val();
-
-                $.ajax({
-                    url: '@Url.Action("AddToCart", "Products")',
-                    type: 'POST',
-                    data: {
-                        productId: productId,
-                        productName: productName,
-                        price: price,
-                        quantity: quantity
-                    },
-                    success: function (response) {
-                        alert('Sản phẩm đã được thêm vào giỏ hàng!');
-                    },
-                    error: function () {
-                        alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
-                    }
-                });
-            });
-        });
-    </script>
-}
-
+<script>
+    document.getElementById('addToCart').addEventListener('click', function () {
+        var productId = this.getAttribute('data-product-id');
+        var productName = document.getElementById('productName').innerText;
+        var productPrice = document.getElementById('productPrice').getAttribute('data-price');
+        var quantity = document.getElementById('quantity').value;
+        var csrfTokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+        var csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
+        fetch('/Cart/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                productId: productId,
+                productName: productName,
+                productPrice: parseFloat(productPrice),
+                quantity: parseInt(quantity)
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
 
