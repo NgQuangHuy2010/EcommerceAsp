@@ -3,7 +3,9 @@
     ViewData["Title"] = "ProductDetails";
     Layout = "~/Views/LayoutUser/LayoutUser.cshtml";
 }
-
+@{
+    var antiforgery = Html.AntiForgeryToken();
+}
 <!-- Product Details Section Begin -->
 <section class="product-details spad bg-light pt-0">
     <div class="container container-product bg-white pt-5">
@@ -24,7 +26,7 @@
                     </div>
                 </div>
             </div>
-
+            @antiforgery
             <div class="col-lg-5">
                 <div class="product__details__text">
                     <h3 id="productName">@Model.Details.NameProduct</h3>
@@ -48,6 +50,8 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="__RequestVerificationToken" value="...">
+
                     <a href="#" class="btn btn-danger mr-4"><span class="icon_bag_alt"></span> Mua ngay</a>
                     <a id="addToCart" data-product-id="@Model.Details.Id" class="btn bg-white text-danger border border-danger">
                         <span class="icon_cart_alt text-danger"></span> Thêm vào giỏ hàng
@@ -191,35 +195,69 @@
     </div>
 </section>
 <!-- Product Details Section End -->
-
 <script>
     document.getElementById('addToCart').addEventListener('click', function () {
         var productId = this.getAttribute('data-product-id');
-        var productName = document.getElementById('productName').innerText;
+        var productName = document.getElementById('productName').innerText.trim(); // Sử dụng trim() để loại bỏ khoảng trắng thừa
         var productPrice = document.getElementById('productPrice').getAttribute('data-price');
-        var quantity = document.getElementById('quantity').value;
-        var csrfTokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-        var csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
-        fetch('/Cart/AddToCart', {
-            method: 'POST',
+        var quantity = document.getElementById('quantity').value.trim(); // Sử dụng trim() để loại bỏ khoảng trắng thừa
+
+        // Kiểm tra các giá trị đã lấy được từ DOM
+        // console.log('productId:', productId);
+        // console.log('productName:', productName);
+        // console.log('productPrice:', productPrice);
+        // console.log('quantity:', quantity);
+
+        // Gửi AJAX request đến hàm AddToCart trong CartController
+        $.ajax({
+            url: '/Cart/AddToCart',
+            type: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() // Lấy token từ form
             },
-            body: JSON.stringify({
+            data: {
                 productId: productId,
                 productName: productName,
-                productPrice: parseFloat(productPrice),
-                quantity: parseInt(quantity)
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
+                productPrice: productPrice,
+                quantity: quantity
+            },
+            success: function (response) {
+                if (response.success) {
+                    updateCartItemCount();  //update số lượng sản phẩm hiện ra ở icon
+                    alert(response.message);
                 }
-            })
-            .catch(error => console.error('Error:', error));
+            },
+            error: function () {
+                alert('Lỗi !!!!');
+            }
+        });
     });
+
+    function updateCartItemCount() {
+        // Gửi Ajax request lấy số lượng mới từ server
+        $.ajax({
+            url: '/Cart/GetCartItemCount', // trong cartController có hàm GetCartItemCount
+            type: 'GET',
+            success: function (response) {
+                // Update UI với số lượng mới
+                var cartItemCountElement = document.getElementById('cartItemCount');
+                if (cartItemCountElement) {
+                    cartItemCountElement.innerText = response.itemCount;
+                } else {
+                    console.error('Element with id "cartItemCount" not found.');
+                }
+            },
+            error: function () {
+                console.error('Error updating cart item count.');
+            }
+        });
+    }
+
 </script>
+
+
+
+
+
+
 

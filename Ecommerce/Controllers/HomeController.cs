@@ -17,6 +17,7 @@ namespace Ecommerce.Controllers
                 Category = db.Category.Take(12).ToList(),
                 AllProducts = db.Products.ToList(),
                 RandomProducts = db.Products.AsEnumerable().OrderBy(x => random.Next()).Take(12).ToList(),
+
             };
 
             return View(viewModel);

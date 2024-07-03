@@ -116,9 +116,33 @@
                         </div>
                         <ul class="header__right__widget">
                             <li>
+                               
+                                @* cho phép sử dụng các lớp và giao diện liên quan đến HTTP trong ASP.NET Core, chẳng hạn như HttpContext và ISession *@
+                                @using Microsoft.AspNetCore.Http
+                                @using Newtonsoft.Json
+                                @using Ecommerce.ModelsView
+                                @* IHttpContextAccessor cung cấp quyền truy cập vào HttpContext hiện tại bao gồm thông tin về yêu cầu HTTP, phản hồi, và session *@
+                                @inject IHttpContextAccessor HttpContextAccessor
+
+                                @functions {
+                                    int GetCartItemCount()
+                                    {
+                                        var cart = HttpContextAccessor?.HttpContext?.Session?.GetString("Cart");
+                                        if (cart != null)
+                                        {
+                                            // Giải tuần tự hóa chuỗi JSON để chuyển đổi chuỗi JSON thành danh sách các đối tượng CartItem
+                                            var cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cart);
+                                            //nếu cartItem null nếu null trả về 0
+                                            return cartItems?.Count ?? 0;
+                                        }
+                                        return 0; // Return 0 nếu cart trống
+                                    }
+                                }
+
+
                                 <a asp-action="Cart" asp-controller="Cart">
                                     <span class="icon_cart_alt"></span>
-                                    <div class="tip">2</div>
+                                    <div class="tip" id="cartItemCount">@GetCartItemCount()</div>
                                 </a>
                             </li>
                         </ul>

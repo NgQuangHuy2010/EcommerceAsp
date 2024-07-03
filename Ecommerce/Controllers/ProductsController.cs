@@ -40,34 +40,8 @@ namespace Ecommerce.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-        [Route("Cart/AddToCart")]
-        public IActionResult AddToCart(int productId, string productName, decimal productPrice, int quantity)
-        {
-            List<CartItem>? cart = HttpContext.Session.GetString("Cart") != null
-                ? JsonConvert.DeserializeObject<List<CartItem>>(HttpContext.Session.GetString("Cart"))
-                : new List<CartItem>();
 
-            var existingItem = cart.FirstOrDefault(item => item.Id == productId);
-            if (existingItem != null)
-            {
-                existingItem.Quantity += quantity;
-            }
-            else
-            {
-                cart.Add(new CartItem
-                {
-                    Id = productId,
-                    ProductName = productName,
-                    ProductPrice = productPrice,
-                    Quantity = quantity
-                });
-            }
 
-            HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
-
-            return Json(new { success = true, message = "Product added to cart." });
-        }
 
 
 
