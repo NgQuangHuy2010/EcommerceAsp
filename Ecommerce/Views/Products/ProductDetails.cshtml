@@ -200,7 +200,7 @@
         var productId = this.getAttribute('data-product-id');
         var productName = document.getElementById('productName').innerText.trim(); // Sử dụng trim() để loại bỏ khoảng trắng thừa
         var productPrice = document.getElementById('productPrice').getAttribute('data-price');
-        var quantity = document.getElementById('quantity').value.trim(); // Sử dụng trim() để loại bỏ khoảng trắng thừa
+        var quantity = document.getElementById('quantity').value.trim();
 
         // Kiểm tra các giá trị đã lấy được từ DOM
         // console.log('productId:', productId);
@@ -223,7 +223,7 @@
             },
             success: function (response) {
                 if (response.success) {
-                    updateCartItemCount();  //update số lượng sản phẩm hiện ra ở icon
+                    updateCartItemCount();  // Update số lượng sản phẩm duy nhất trên icon
                     alert(response.message);
                 }
             },
@@ -234,12 +234,11 @@
     });
 
     function updateCartItemCount() {
-        // Gửi Ajax request lấy số lượng mới từ server
+        // Gửi Ajax request lấy số lượng sản phẩm duy nhất từ server
         $.ajax({
-            url: '/Cart/GetCartItemCount', // trong cartController có hàm GetCartItemCount
+            url: '/Cart/GetCartItemCount',  // trong cartController có hàm GetCartItemCount
             type: 'GET',
             success: function (response) {
-                // Update UI với số lượng mới
                 var cartItemCountElement = document.getElementById('cartItemCount');
                 if (cartItemCountElement) {
                     cartItemCountElement.innerText = response.itemCount;
@@ -252,10 +251,10 @@
             }
         });
     }
-
+    function updateTotalAmount(totalAmount) {
+        document.querySelector('div h4').innerText = 'Total Amount: ' + formatCurrency(totalAmount);
+    }
 </script>
-
-
 
 
 

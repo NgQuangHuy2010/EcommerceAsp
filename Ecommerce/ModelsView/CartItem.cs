@@ -7,5 +7,6 @@
         public decimal ProductPrice { get; set; }
         public int Quantity { get; set; }
         public decimal TotalPrice => ProductPrice * Quantity;
+
     }
 }

@@ -1,4 +1,5 @@
-﻿@model List<Ecommerce.ModelsView.CartItem>
+﻿@model Ecommerce.ModelsView.TotalCart
+
 
 @{
     ViewData["Title"] = "Cart";
@@ -7,108 +8,154 @@
 
 
 @* debus cart *@
- @*   <div>
+@*    <div>
         <h4>Debug Cart Data:</h4>
         <pre>@ViewBag.CartJson</pre>
     </div> *@
+    @* !Model.Any() có nghĩa là "Model không có bất kỳ phần tử nào" hay "Model rỗng" *@
+@if (!Model.Items.Any())  //kiểm tra xem model có trống hay ko (hay gọi là giỏ hàng trống)
+{
+     <div class="container-fluid pt-5">
+        <h3 class="text-center">Giỏ hàng trống <a asp-action="Index" asp-controller="Home" >Tiếp tục mua hàng</a></h3>
 
-<div class="container-fluid pt-5">
+         </div>
+}else
+{
+    <div class="container-fluid pt-5">
 
-    <div class="row px-5">
-        <div class="col-lg-8 table-responsive mb-5">
-            <table class="table table-bordered text-center mb-0">
-                <thead class="text-dark">
-                    <tr>
-                        <th>Sản phẩm</th>
-                        <th>Đơn giá</th>
-                        <th>Số lượng</th>
-                        <th>Tổng giá</th>
-                        <th>Xóa</th>
-                    </tr>
-                </thead>
-                <tbody class="align-middle">
-                    @foreach (var item in Model)
-                    {
+        <div class="row px-5">
+            <div class="col-lg-8 table-responsive mb-5">
+                <table class="table table-bordered text-center mb-0">
+                    <thead class="text-dark">
                         <tr>
-                            <td class="align-middle">@item.ProductName</td>
-                            <td class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.ProductPrice)</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <input min="1" type="number" class="form-control form-control-sm" value="@item.Quantity" name="quantity" data-product-id="@item.Id" onchange="updateCart(this)">
-
-                                </div>
-                            </td>
-                            <td id="totalPrice_@item.Id" class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.TotalPrice)</td>
-
-                            <td class="align-middle">
-                                <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></a>
-                            </td>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Tổng giá</th>
+                            <th>Xóa</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="col-lg-4">
-            <form class="mb-5" action="">
-                <div class="input-group">
-                    <input type="text" class="form-control p-4" placeholder="Mã giảm giá">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary">Thêm mã giảm giá</button>
+                    </thead>
+                    <tbody class="align-middle">
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="align-middle">@item.ProductName
+                                    @foreach (var product in Model.image)
+                                    {
+                                        if (product.Id == item.Id)
+                                        {
+                                            <span><img src="~/imgs/imgProducts/@product.ImageProduct" class="card-img-top img-fluid px-1 py-2" alt="Product Image"></span>
+                                        }
+                                    }
+                                </td>
+                                <td class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.ProductPrice)</td>
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <input min="1" type="number" class="form-control form-control-sm" value="@item.Quantity" name="quantity" data-product-id="@item.Id" onchange="updateCart(this)">
+                                    </div>
+                                </td>
+                                <td id="totalPrice_@item.Id" class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.TotalPrice)</td>
+                                <td class="align-middle">
+                                    <a  class="btn btn-sm btn-danger" onclick="removeItem(@item.Id)"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4">
+                <form class="mb-5" action="">
+                    <div class="input-group">
+                        <input type="text" class="form-control p-4" placeholder="Mã giảm giá">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary">Thêm mã giảm giá</button>
+                        </div>
                     </div>
-                </div>
-            </form>
-            <div class="card border-secondary mb-5">
-                <div class="card-header border-0">
-                    <h4 class="font-weight-semi-bold m-0">Chi tiết giỏ hàng</h4>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3 pt-1">
-                        <h6 class="font-weight-medium">Tạm tính</h6>
-                        <h6 class="font-weight-medium"></h6>
+                </form>
+                <div class="card border-secondary mb-5">
+                    <div class="card-header border-0">
+                        <h4 class="font-weight-semi-bold m-0">Chi tiết giỏ hàng</h4>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <h6 class="font-weight-medium">Phí vận chuyển</h6>
-                        <h6 class="font-weight-medium">0</h6>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3 pt-1">
+                            <h5 class="font-weight-medium">Tạm tính</h5>
+                            <h5 class="font-weight-medium text-danger" id="totalAmount">@Model.TotalAmount.ToString("N0") ₫</h5>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="font-weight-medium">Phí vận chuyển</h5>
+                            <h5 class="font-weight-medium">0</h5>
+                        </div>
                     </div>
-                </div>
-                <div class="card-footer border-secondary bg-transparent">
-                    <div class="d-flex justify-content-between mt-2">
-                        <h6 class="font-weight-bold text-danger">Tổng tiền thanh toán</h6>
-                        <h5 class="font-weight-bold text-danger"></h5>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h4 class="font-weight-bold text-danger">Tổng tiền thanh toán</h4>
+                            <h4 class="font-weight-bold text-danger" ></h4>
+                        </div>
+                        <a href="#" class="btn btn-block btn-danger my-3 py-3">Tiến hành thanh toán</a>
                     </div>
-                    <a href="#" class="btn btn-block btn-danger my-3 py-3">Tiến hành thanh toán</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 
-<script>
-    function updateCart(inputElement) {
-        var productId = inputElement.getAttribute('data-product-id');
-        var totalPriceElement = document.getElementById('totalPrice_' + productId);
-        if (totalPriceElement) {
-            var productPriceText = inputElement.closest('tr').querySelector('.align-middle:nth-child(2)').innerText;
-            var productPrice = parseFloat(productPriceText.replace(/[^\d.-]/g, '')); // Lấy số từ chuỗi
+
+@section Scripts {
+    @* hàm cập nhật giá giỏ hàng *@
+    <script>
+        function updateCart(inputElement) {
+            var productId = inputElement.getAttribute('data-product-id');
             var quantity = parseInt(inputElement.value);
 
-            var totalPrice = productPrice * quantity;
-
-            // Định dạng lại số tiền
-            totalPriceElement.innerText = formatCurrency(totalPrice);
-        } else {
-            console.error('Element with id "totalPrice_' + productId + '" not found.');
+            $.ajax({
+                url: '@Url.Action("UpdateCart", "Cart")',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    quantity: quantity
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var totalPriceElement = document.getElementById('totalPrice_' + productId);
+                        totalPriceElement.innerText = response.totalPrice;
+                        var totalAmountElement = document.getElementById('totalAmount');
+                        totalAmountElement.innerText = response.totalAmount;
+                        
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error updating cart.');
+                }
+            });
         }
-
-        // Thêm logic AJAX nếu bạn cần gửi yêu cầu đến server để cập nhật giỏ hàng
-    }
-
-    function formatCurrency(amount) {
-        // Định dạng lại số tiền theo tiêu chuẩn địa phương của Việt Nam
-        return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-    }
-
-
-</script>
+        function removeItem(productId) {
+            if (confirm('Bạn muốn xóa sản phẩm này?')) {
+                $.ajax({
+                    url: '@Url.Action("RemoveFromCart", "Cart")',
+                    type: 'POST',
+                    data: {
+                        productId: productId
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                                alert('Ok' );
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error removing item from cart.');
+                    }
+                });
+            }
+        }
+        // function updateTotalAmount(totalAmount) {
+        //     document.querySelector('div h4').innerText = 'Total Amount: ' + formatCurrency(totalAmount);
+        // }
+    </script>
+}
 
