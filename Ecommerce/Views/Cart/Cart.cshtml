@@ -15,13 +15,13 @@
     @* !Model.Any() có nghĩa là "Model không có bất kỳ phần tử nào" hay "Model rỗng" *@
 @if (!Model.Items.Any())  //kiểm tra xem model có trống hay ko (hay gọi là giỏ hàng trống)
 {
-     <div class="container-fluid pt-5">
+     <div class="container-fluid pt-5 h-100" >
         <h3 class="text-center">Giỏ hàng trống <a asp-action="Index" asp-controller="Home" >Tiếp tục mua hàng</a></h3>
 
          </div>
 }else
 {
-    <div class="container-fluid pt-5">
+    <div class="container-fluid pt-5 h-100">
 
         <div class="row px-5">
             <div class="col-lg-8 table-responsive mb-5">
@@ -40,12 +40,13 @@
                         {
                             <tr>
                                 <td class="align-middle">@item.ProductName
-                                    @foreach (var product in Model.image)
+                                    @if (!string.IsNullOrEmpty(item.ImageProductCart))  //nếu hình ko null thì load hình
                                     {
-                                        if (product.Id == item.Id)
-                                        {
-                                            <span><img src="~/imgs/imgProducts/@product.ImageProduct" class="card-img-top img-fluid px-1 py-2" alt="Product Image"></span>
-                                        }
+                                        <span>
+                                            <img src="~/imgs/imgProducts/@item.ImageProductCart" class="card-img-top img-fluid px-1 py-2" alt="Product Image" style="max-width: 100px; max-height: 100px;" />
+                                        </span>
+                                    }else{
+                                        <span>không có hình ảnh</span>
                                     }
                                 </td>
                                 <td class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.ProductPrice)</td>
