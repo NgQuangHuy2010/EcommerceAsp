@@ -13,6 +13,8 @@ public partial class EcommerceContext : DbContext
     {
     }
 
+    public virtual DbSet<Account> Accounts { get; set; }
+
     public virtual DbSet<Category> Category { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
@@ -22,6 +24,17 @@ public partial class EcommerceContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Account>(entity =>
+        {
+            entity.ToTable("account");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.Fullname).HasColumnName("fullname");
+            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.Phone).HasColumnName("phone");
+        });
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_category_1");
