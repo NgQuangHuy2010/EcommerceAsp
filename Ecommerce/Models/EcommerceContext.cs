@@ -24,6 +24,8 @@ public partial class EcommerceContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Account>(entity =>
         {
             entity.ToTable("account");

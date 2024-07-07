@@ -633,13 +633,13 @@ ol {
   display: none;
 }
 
-.header__right__auth a:after {
+/*.header__right__auth a:after {
   position: absolute;
   right: -8px;
   top: -2px;
   content: "/";
   font-size: 13px;
-}
+}*/
 
 .header__right__widget {
   display: inline-block;

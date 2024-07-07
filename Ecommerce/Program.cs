@@ -1,21 +1,40 @@
 ﻿using Ecommerce.Models;
+using Ecommerce.ModelsView.User;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-var connectionString = builder.Configuration.GetConnectionString("EcommerceContext");
+
+// Sử dụng một chuỗi kết nối duy nhất cho cả EcommerceContext và ApplicationDbContext
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<EcommerceContext>(x => x.UseSqlServer(connectionString));
-//pack System.io
-// đăng ký dịch vụ IHttpContextAccessor dùng để add cart get count cart
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+// Đăng ký Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    // Cấu hình tùy chọn mật khẩu
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>() // Sử dụng EF Core làm storage cho Identity
+.AddDefaultTokenProviders();
+
+// Đăng ký các dịch vụ khác
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<System.IO.Abstractions.IFileSystem, System.IO.Abstractions.FileSystem>();
 builder.Services.AddTransient<IEmail, Email>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    //thời gian xóa session là 30 phút
+    // thời gian xóa session là 30 phút
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
@@ -28,13 +47,12 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
+// Authentication và Authorization
+app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession(); // sử dụng session
-
-//cấu hình route product khi nhấn vào danh mục từ trang home
+app.UseSession(); // Sử dụng session
+// Cấu hình route
 app.MapControllerRoute(
     name: "product",
     pattern: "product/{id}",
@@ -42,7 +60,6 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
-    );
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

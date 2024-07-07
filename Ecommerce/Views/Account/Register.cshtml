@@ -1,4 +1,5 @@
 ﻿
+@model Ecommerce.ModelsView.User.RegisterUserViewModel;
 @{
     Layout = null;
 }
@@ -38,25 +39,31 @@
                 <div class="card border-0 shadow rounded-3 my-5">
                     <div class="card-body p-4 p-sm-5">
                         <h2 class="card-title text-center mb-5">Đăng ký</h2>
-                        <form>
+                        <form asp-action="Register" method="post">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingName" placeholder="Tên">
+                                <input type="text" class="form-control" asp-for="Fullname" placeholder="Tên">
+                                <span asp-validation-for="Fullname" class="text-danger"></span>
                                 <label for="floatingName">Tên</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <input type="email" class="form-control" asp-for="Email" placeholder="name@example.com">
+                                <span asp-validation-for="Email" class="text-danger"></span>
                                 <label for="floatingInput">Email</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingPhone" placeholder="Số điện thoại">
+                                <input type="text" class="form-control" asp-for="Phone" placeholder="Số điện thoại">
+                                <span asp-validation-for="Phone" class="text-danger"></span>
                                 <label for="floatingPhone">Số điện thoại</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingPassword" placeholder="Mật khẩu">
+                                <input type="password" class="form-control" asp-for="Password" placeholder="Mật khẩu">
+                                <span asp-validation-for="Password" class="text-danger"></span>
                                 <label for="floatingPassword">Mật khẩu</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingConfirmPassword" placeholder="Xác nhận mật khẩu">
+                                <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="Xác nhận mật khẩu">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
                                 <label for="floatingConfirmPassword">Xác nhận mật khẩu</label>
                             </div>
 
@@ -81,7 +88,9 @@
                                 <i class="fab fa-facebook-f me-2"></i> Đăng ký với Facebook
                               </button>
                             </div> -->
+                         
                         </form>
+                     
                     </div>
                 </div>
             </div>

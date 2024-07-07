@@ -111,12 +111,35 @@
                 </div>
                 <div class="col-lg-2">
                     <div class="header__right">
-                        <div class="header__right__auth">   
-                            <a asp-action="Login" asp-controller="Account" class="d-flex align-items-center justify-content-center">
-                                <i class="fa fa-user-circle-o pr-2" style="color:white; font-size:30px;"></i>
-                                <span>Tài khoản</span>
-                            </a>
-                        </div>
+                        @inject IHttpContextAccessor HttpContextAccessor
+                        @if (@HttpContextAccessor.HttpContext.Session.GetString("IsLoggedIn") == "true")
+                        {
+                            <!-- Nếu đã đăng nhập -->
+                            <div class="header__right__auth">
+                                <div class="dropdown">
+                                    <a class=" d-flex align-items-center justify-content-center" data-toggle="dropdown" style="cursor:pointer;">
+                                        <i class="fa fa-user-circle-o pr-2" style="color:white; font-size:30px;"></i>
+                                        <span class="text-white">@HttpContextAccessor.HttpContext.Session.GetString("Fullname")</span>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item text-dark" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Nếu chưa đăng nhập -->
+                            <div class="header__right__auth">
+                                <a asp-action="Login" asp-controller="Account" class="d-flex align-items-center justify-content-center">
+                                    <i class="fa fa-user-circle-o pr-2" style="color:white; font-size:30px;"></i>
+                                    <span>Tài khoản</span>
+                                </a>
+                            </div>
+                        }
+
+
+
                         <ul class="header__right__widget">
                             <li>
                                
