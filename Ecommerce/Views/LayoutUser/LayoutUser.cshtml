@@ -111,18 +111,24 @@
                 </div>
                 <div class="col-lg-2">
                     <div class="header__right">
-                        @inject IHttpContextAccessor HttpContextAccessor
-                        @if (@HttpContextAccessor.HttpContext.Session.GetString("IsLoggedIn") == "true")
+                       @using Ecommerce.ModelsView.User;
+                        @using Microsoft.AspNetCore.Identity
+                        @inject SignInManager<ApplicationUser> SignInManager
+                        @inject UserManager<ApplicationUser> UserManager
+                        @if (SignInManager.IsSignedIn(User))
                         {
                             <!-- Nếu đã đăng nhập -->
                             <div class="header__right__auth">
                                 <div class="dropdown">
-                                    <a class=" d-flex align-items-center justify-content-center" data-toggle="dropdown" style="cursor:pointer;">
+                                    <a class="d-flex align-items-center justify-content-center" data-toggle="dropdown" style="cursor:pointer;">
                                         <i class="fa fa-user-circle-o pr-2" style="color:white; font-size:30px;"></i>
-                                        <span class="text-white">@HttpContextAccessor.HttpContext.Session.GetString("Fullname")</span>
+                                        <span class="text-white">@UserManager.GetUserAsync(User).Result.Fullname</span>
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item text-dark" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                                        <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-link ">Đăng xuất</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

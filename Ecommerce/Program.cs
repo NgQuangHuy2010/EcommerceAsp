@@ -16,13 +16,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 // Đăng ký Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // Cấu hình tùy chọn mật khẩu
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequiredUniqueChars = 1;
+    options.Password.RequireDigit = false; // Không yêu cầu phải có chữ số trong mật khẩu.
+    options.Password.RequireLowercase = false; //Không yêu cầu phải có chữ cái thường trong mật khẩu
+    options.Password.RequireNonAlphanumeric = false; //hông yêu cầu phải có ký tự đặc biệt trong mật khẩu
+    options.Password.RequireUppercase = false; //Không yêu cầu phải có chữ cái hoa trong mật khẩu
+    options.Password.RequiredLength = 3; //Yêu cầu độ dài tối thiểu của mật khẩu là 3 ký tự.
+    options.Password.RequiredUniqueChars = 1; // Số ký tự khác nhau yêu cầu trong mật khẩu
 })
 .AddEntityFrameworkStores<ApplicationDbContext>() // Sử dụng EF Core làm storage cho Identity
 .AddDefaultTokenProviders();

@@ -58,6 +58,13 @@
                             <div class="form-floating mb-3">
                                 <input type="password" class="form-control" asp-for="Password" placeholder="Mật khẩu">
                                 <span asp-validation-for="Password" class="text-danger"></span>
+                                <div class="text-danger">
+                                    @if (ViewData.ModelState.ContainsKey("PasswordTooShort"))
+                                    {
+                                        <span>@ViewData.ModelState["PasswordTooShort"].Errors.First().ErrorMessage</span>
+                                    }
+                                </div>
+
                                 <label for="floatingPassword">Mật khẩu</label>
                             </div>
                             <div class="form-floating mb-3">

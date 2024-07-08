@@ -12,6 +12,6 @@ namespace Ecommerce.ModelsView.User
         [Required]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
-        public string? Fullname { get; set; }
+
     }
 }
