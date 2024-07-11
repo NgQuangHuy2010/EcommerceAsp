@@ -1,12 +1,13 @@
 ﻿using Ecommerce.Models;
 using Ecommerce.ModelsView;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
 namespace Ecommerce.Areas.System.Controllers
 {
-
+    [Authorize(Roles = "Admin")]
     [Area("system")]
     [Route("system/product")]
     public class ProductController : Controller

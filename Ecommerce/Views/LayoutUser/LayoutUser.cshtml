@@ -70,7 +70,7 @@
             </li>
         </ul>
         <div class="offcanvas__logo">
-            <a asp-action="Index" asp-controller="Home"><img src="~/FE/img/logo.png" alt="" /></a>
+            <a href="./index.html"><img src="img/logo.png" alt="" /></a>
         </div>
         <div id="mobile-menu-wrap"></div>
         <div class="offcanvas__auth">
@@ -86,9 +86,7 @@
                 <div class="col-xl-2 col-lg-2">
                     <div class="header__logo">
                         <a asp-action="Index" asp-controller="Home">
-                            <img src="~/FE/img/Remove-bg.ai_1718535780539.png"
-                                 alt=""
-                                 class="logo_header_img" />
+                            <img src="~/FE/img/Remove-bg.ai_1718535780539.png" alt="" class="logo_header_img" />
                         </a>
                     </div>
                 </div>
@@ -97,21 +95,19 @@
                         <form asp-action="SearchProducts" asp-controller="Products" method="get">
                             <div class="input-group">
                                 @* HomeViewModel kế thừa từ SearchViewModel để lấy ra thuộc tính SearchProduct từ SearchViewModel *@
-                                <input type="text" name="searchProduct" value="@Model.SearchProduct"
-                                       class="form-control form-control-search"
-                                       placeholder="Tìm kiếm sản phẩm..." />
+                                <input type="text" name="searchProduct" value="@Model.SearchProduct" class="form-control form-control-search" placeholder="Tìm kiếm sản phẩm..." />
                                 <div class="input-group-append">
                                     <button class="btn custom-border border-light" type="submit">
                                         <span class="icon_search search-switch"></span>
                                     </button>
                                 </div>
                             </div>
-                        </form> 
+                        </form>
                     </nav>
                 </div>
                 <div class="col-lg-2">
                     <div class="header__right">
-                       @using Ecommerce.ModelsView.User;
+                        @using Ecommerce.ModelsView.User
                         @using Microsoft.AspNetCore.Identity
                         @inject SignInManager<ApplicationUser> SignInManager
                         @inject UserManager<ApplicationUser> UserManager
@@ -146,9 +142,12 @@
 
 
 
+
+
+
+
                         <ul class="header__right__widget">
                             <li>
-                               
                                 @* cho phép sử dụng các lớp và giao diện liên quan đến HTTP trong ASP.NET Core, chẳng hạn như HttpContext và ISession *@
                                 @using Microsoft.AspNetCore.Http
                                 @using Newtonsoft.Json
@@ -171,7 +170,6 @@
                                     }
                                 }
 
-
                                 <a asp-action="Cart" asp-controller="Cart">
                                     <span class="icon_cart_alt"></span>
                                     <div class="tip" id="cartItemCount">@GetCartItemCount()</div>
@@ -186,6 +184,7 @@
             </div>
         </div>
     </header>
+    <!-- Header Section End -->
     @RenderBody()
     <footer class=" bg-body-tertiary text-center text-lg-start">
         <div class="">

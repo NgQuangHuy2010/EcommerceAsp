@@ -17,13 +17,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
+    <Folder Include="ModelsView\Admin\" />
     <Folder Include="wwwroot\imgs\imgProducts\" />
     <Folder Include="wwwroot\imgs\imgCategory\" />
   </ItemGroup>

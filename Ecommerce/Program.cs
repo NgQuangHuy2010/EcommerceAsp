@@ -10,21 +10,34 @@ builder.Services.AddControllersWithViews();
 
 // Sử dụng một chuỗi kết nối duy nhất cho cả EcommerceContext và ApplicationDbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<EcommerceContext>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<EcommerceContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 // Đăng ký Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = false; // Không yêu cầu phải có chữ số trong mật khẩu.
-    options.Password.RequireLowercase = false; //Không yêu cầu phải có chữ cái thường trong mật khẩu
-    options.Password.RequireNonAlphanumeric = false; //hông yêu cầu phải có ký tự đặc biệt trong mật khẩu
-    options.Password.RequireUppercase = false; //Không yêu cầu phải có chữ cái hoa trong mật khẩu
-    options.Password.RequiredLength = 3; //Yêu cầu độ dài tối thiểu của mật khẩu là 3 ký tự.
-    options.Password.RequiredUniqueChars = 1; // Số ký tự khác nhau yêu cầu trong mật khẩu
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequiredUniqueChars = 1;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>() // Sử dụng EF Core làm storage cho Identity
+.AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+
+// Cấu hình quyền truy cập
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+});
+
+// Cấu hình cookie
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/account/login";  //Đường dẫn mà người dùng sẽ được chuyển hướng đến khi họ cần phải đăng nhập để truy cập vào một phần của ứng dụng yêu cầu xác thực(nếu chưa login)
+    options.AccessDeniedPath = "/"; // Chuyển hướng về trang chủ của User khi bị từ chối quyền truy cập
+});
 
 // Đăng ký các dịch vụ khác
 builder.Services.AddHttpContextAccessor();
@@ -33,12 +46,23 @@ builder.Services.AddTransient<IEmail, Email>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    // thời gian xóa session là 30 phút
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
 var app = builder.Build();
+
+// Tạo vai trò và tài khoản admin mặc định khi khởi động ứng dụng
+//CreateRolesAndAdminUser có nhiệm vụ tạo vai trò "Admin" và "User" nếu chúng chưa tồn tại trong hệ thống
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    await CreateRolesAndAdminUser(roleManager, userManager);
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -47,18 +71,61 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-// Authentication và Authorization
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession(); // Sử dụng session
+app.UseSession();
+
 // Cấu hình route
+//route mặc định của area khi ng dùng ko có quyền admin
 app.MapControllerRoute(
-    name: "product",
-    pattern: "product/{id}",
-    defaults: new { controller = "Products", action = "Products" });
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "product",
+    pattern: "product/{id}",
+    defaults: new { controller = "Products", action = "Products" });
 app.Run();
+
+// Tạo vai trò và tài khoản admin mặc định
+//CreateRolesAndAdminUser có nhiệm vụ tạo vai trò "Admin" và "User" nếu chúng chưa tồn tại trong hệ thống
+async Task CreateRolesAndAdminUser(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+{
+    string[] roleNames = { "Admin", "User" };
+    IdentityResult roleResult;
+
+    foreach (var roleName in roleNames)
+    {
+        var roleExist = await roleManager.RoleExistsAsync(roleName);
+        if (!roleExist)
+        {
+            roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+
+    // Tạo một tài khoản admin mặc định
+    var admin = new ApplicationUser
+    {
+        UserName = "huy2010@gmail.com",
+        Email = "huy2010@gmail.com",
+        Fullname = "Quang Huy",
+        Phone = "0123456789"
+    };
+
+    string adminPassword = "201000";
+    var _admin = await userManager.FindByEmailAsync("huy2010@gmail.com");
+
+    if (_admin == null)
+    {
+        var createAdmin = await userManager.CreateAsync(admin, adminPassword);
+        if (createAdmin.Succeeded)
+        {
+            await userManager.AddToRoleAsync(admin, "Admin");
+        }
+    }
+}

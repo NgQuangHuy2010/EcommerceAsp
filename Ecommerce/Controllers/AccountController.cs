@@ -39,19 +39,31 @@ namespace Ecommerce.Controllers
             {
                 //lockoutOnFailure: false, Không khóa tài khoản sau nhiều lần đăng nhập thất bại
                 //isPersistent: false, Cookie xác thực sẽ là cookie phiên, và người dùng sẽ bị đăng xuất khi đóng trình duyệt
-                //PasswordSignInAsync  xác thực kiểm tra mật khẩu
+                //Hàm PasswordSignInAsync xác thực người dùng bằng cách kiểm tra mật khẩu
                 var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, isPersistent: false, lockoutOnFailure: false);
 
-                if (result.Succeeded)
+                if (result.Succeeded) // nếu check thành công
                 {
-                    await _userManager.FindByEmailAsync(login.Email);
-                    return RedirectToAction("Index", "Home");
+                    // tiếp tục tìm email đang đăng nhập 
+                    var user = await _userManager.FindByEmailAsync(login.Email);
+                    //kiểm tra nếu role là Admin (cấu hình ở program.cs) 
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        // return về trang admin 
+                        return RedirectToAction("Index", "Category", new { area = "System" });
+                    }
+                    else
+                    {
+                        //nếu ko phải admin về home cho user
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
-
+                //check fail email and pass
                 ModelState.AddModelError("Email", "Email hoặc mật khẩu không đúng!");
             }
             return View(login);
         }
+
 
         [Route("register")]
         public IActionResult Register()

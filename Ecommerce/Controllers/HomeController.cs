@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controllers
 {
+
     public class HomeController : Controller
     {
         public EcommerceContext db = new EcommerceContext();
