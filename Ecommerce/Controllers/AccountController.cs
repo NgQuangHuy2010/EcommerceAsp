@@ -8,11 +8,12 @@ namespace Ecommerce.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         [Route("login")]
@@ -103,6 +104,14 @@ namespace Ecommerce.Controllers
 
                 if (result.Succeeded)
                 {
+                    //kiểm tra vai trò có tồn tại ko 
+                    if (!await _roleManager.RoleExistsAsync("User"))
+                    {
+                        //tạo mới vai trò user
+                        await _roleManager.CreateAsync(new IdentityRole("User"));
+                    }
+                    //nếu ko có vai trò gì thì gán quyền mặc định là user
+                    await _userManager.AddToRoleAsync(user, "User");
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Login", "Account");
                 }

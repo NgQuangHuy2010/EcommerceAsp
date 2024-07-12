@@ -1,0 +1,100 @@
+﻿@model Ecommerce.ModelsView.Admin.CreateAccountAdminViewModel;
+
+@{
+    ViewData["Title"] = "Update";
+    Layout = "~/Areas/System/Views/Layout/Admin.cshtml";
+}
+
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row page-titles mx-0">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Tạo mới tài khoản</h4>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- row -->
+        <div class="row">
+            <div class="col-xl-12 col-xxl-12">
+                <div class="card">
+
+                    <div class="card-body">
+                        <form class="" asp-action="Update" method="post">
+                            @Html.AntiForgeryToken()
+                            <div>
+
+                                <section>
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Tên người dùng</label></h5>
+                                                <input type="text" asp-for="Fullname" class="form-control" />
+                                                <span class="text-danger" asp-validation-for="Fullname"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Số điện thoại</label></h5>
+                                                <input id="single-file-input" type="number" class="form-control" asp-for="Phone" />
+                                                <span class="text-danger" asp-validation-for="Phone"></span>
+                                            </div>
+                                            <div id="single-preview" class="mt-4"></div>
+                                        </div>
+
+                                    </div>
+
+                                </section>
+                                <section>
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Email</label></h5>
+                                                <input type="text" asp-for="Email" class="form-control" />
+                                                <span class="text-danger" asp-validation-for="Email"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </section>
+                                <section>
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Mật khẩu</label></h5>
+                                                <input type="text" asp-for="Password" class="form-control" />
+                                                <span class="text-danger" asp-validation-for="Password"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Xác nhận mật khẩu</label></h5>
+                                                <input type="text" asp-for="ConfirmPassword" class="form-control" />
+                                                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </section>
+                                <div class="text-left mt-4 mb-5">
+                                    <button class="btn btn-primary btn-sl-sm mr-3" type="submit">
+                                        <span class="mr-2"><i class="fa fa-paper-plane"></i></span> Thêm
+                                    </button>
+                                    <a class="btn btn-dark btn-sl-sm" asp-action="index">
+                                        <span class="mr-2">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </span> Quay về
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -8,6 +8,6 @@ namespace Ecommerce.ModelsView.User
         public string? Fullname { get; set; }
         public string? Phone { get; set; }
         [NotMapped]
-        public IList<string>? Roles { get; set; }
+        public IList<string> Roles { get; set; }
     }
 }
