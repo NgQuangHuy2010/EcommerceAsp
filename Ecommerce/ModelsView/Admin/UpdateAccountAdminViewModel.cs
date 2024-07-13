@@ -2,7 +2,7 @@
 
 namespace Ecommerce.ModelsView.Admin
 {
-    public class CreateAccountAdminViewModel
+    public class UpdateAccountAdminViewModel
     {
         public string? Id { get; set; }
         [Required]
@@ -10,7 +10,7 @@ namespace Ecommerce.ModelsView.Admin
 
         public string? Phone { get; set; }
 
-        [Required]
+
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
@@ -22,6 +22,5 @@ namespace Ecommerce.ModelsView.Admin
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
-
     }
 }

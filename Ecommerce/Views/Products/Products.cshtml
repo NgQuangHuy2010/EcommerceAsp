@@ -138,7 +138,21 @@
                     <div class="col-lg-3 p-2">
                         <div class="card item-card-flashsale">
                             <div class="card-img-top-container">
-                                    <img src="~/imgs/imgProducts/@product.ImageProduct" class="card-img-top img-fluid p-3" alt="Product Image">
+                                     @*   2 trường hợp lấy image ra view  *@
+                                    @if (!string.IsNullOrEmpty(product.ImageProduct))
+                                    {
+                                        //nếu img có đường dẫn là http thì lấy trưc tiếp từ model để hiện ra image http (insert trực tiếp từ sql)
+                                        if (product.ImageProduct.StartsWith("http"))
+                                        {
+                                            <img class="card-img-top img-fluid px-1 py-2" alt="Product Image" src="@product.ImageProduct" />
+                                        }
+                                        else
+                                        {
+                                            //nếu ko phải từ http thì lấy ra từ wwwroot như bình thường
+                                            <img class="card-img-top img-fluid px-1 py-2" alt="Product Image" src="~/imgs/imgProducts/@product.ImageProduct" />
+
+                                        }
+                                    }
                             </div>
                             <div class="card-body">
                                     <a asp-action="ProductDetails" asp-controller="Products" asp-route-id="@product.Id" class="text-decoration-none">
