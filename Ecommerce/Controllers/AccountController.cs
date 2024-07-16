@@ -1,11 +1,16 @@
 ﻿using Ecommerce.ModelsView.User;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 namespace Ecommerce.Controllers
 {
-    [Route("account")]
+    // [Route("account")]
+
     public class AccountController : Controller
     {
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -14,6 +19,7 @@ namespace Ecommerce.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+
         }
 
         [Route("login")]
@@ -29,6 +35,109 @@ namespace Ecommerce.Controllers
                 return View();
 
             }
+        }
+
+
+        public async Task LoginWithGoogle()
+        {
+            //var redirectUri = Url.Action("GoogleResponse");
+            //Console.WriteLine($"RedirectUri: {redirectUri}");
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+                new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("GoogleResponse")
+                });
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            if (result?.Succeeded == true)
+            {
+                // Lấy thông tin từ Claims
+                var claims = result.Principal.Claims.ToList();
+                var userId = result.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+                var fullName = result.Principal.FindFirstValue(ClaimTypes.Name);
+
+                // Lưu thông tin vào cơ sở dữ liệu
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    user = new ApplicationUser
+                    {
+                        UserName = email,
+                        Email = email,
+                        Fullname = fullName // Thêm thông tin tên đầy đủ nếu cần thiết
+                                            // Các thông tin khác có thể lưu tại đây
+                    };
+                    var resultCreate = await _userManager.CreateAsync(user);
+                    if (!resultCreate.Succeeded)
+                    {
+                        // Xử lý khi không tạo người dùng thành công
+                        return RedirectToAction("Index", "Home"); // hoặc trả về một view lỗi
+                    }
+                }
+
+                // Đăng nhập người dùng vào hệ thống
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                // Chuyển hướng sau khi đăng nhập thành công
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                // Xử lý khi không xác thực thành công
+                return RedirectToAction("Index", "Home"); // hoặc trả về một view lỗi
+            }
+        }
+
+
+        //public async Task<IActionResult> GoogleResponse()
+        //{
+        //    var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+        //    if (result?.Succeeded == true)
+        //    {
+        //        var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+        //        {
+        //            claim.Issuer,
+        //            claim.OriginalIssuer,
+        //            claim.Type,
+        //            claim.Value
+        //        });
+        //        Console.WriteLine("Claims:");
+        //        foreach (var claim in claims)
+        //        {
+        //            Console.WriteLine($"{claim.Type}: {claim.Value}");
+        //        }
+
+        //        // Xử lý các claims
+        //        return RedirectToAction("Index", "Home");
+        //        // return Json(claims);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Authentication failed.");
+        //        // Xử lý khi không xác thực thành công
+        //        return RedirectToAction("Index", "Home"); // hoặc trả về một view lỗi
+        //    }
+        //}
+
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await HttpContext.SignOutAsync();
+        //    return RedirectToAction("Index", "Home");
+
+        //}
+
+        //khi ko quyền admin trả về action này 
+        public IActionResult AccessDenied()
+        {
+            return RedirectToAction("Index", "Home");
         }
 
         [Route("login")]
@@ -64,6 +173,13 @@ namespace Ecommerce.Controllers
             }
             return View(login);
         }
+
+
+
+
+
+
+
 
 
         [Route("register")]
