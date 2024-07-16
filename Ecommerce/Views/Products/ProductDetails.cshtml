@@ -13,15 +13,43 @@
             <div class="col-lg-7">
                 <div class="product__details__pic">
                     <div class="product__details__pic__left product__thumb nice-scroll">
-                        <a class="pt active" href="#product-1">
-                            <img src="~/imgs/imgProducts/@Model.Details.ImageProduct" alt="">
+                        <a class="pt active" >
+                            @* kiem tra xem img details có null ko *@
+                            @if (!string.IsNullOrEmpty(Model.Details.ImageProduct))
+                            {
+                                //neu img là http thì get img
+                                if (Model.Details.ImageProduct.StartsWith("http"))
+                                {
+                                    <img src="@Model.Details.ImageProduct" alt="Product Image">
+
+                                }
+                                else
+                                {
+                                    //nếu img là từ wwwroot ra thì get img từ /imgs/imgProducts ra
+                                    <img src="~/imgs/imgProducts/@Model.Details.ImageProduct" alt="Product Image">
+
+                                }
+                            }
+                        
                         </a>
                         
                     </div>
                     <div class="product__details__slider__content">
                         <div class="product__details__pic__slider owl-carousel">
-                            <img  class="product__big__img" src="~/imgs/imgProducts/@Model.Details.ImageProduct" alt="">    
-                            
+                            @if (!string.IsNullOrEmpty(Model.Details.ImageProduct))
+                            {
+                                if (Model.Details.ImageProduct.StartsWith("http"))
+                                {
+                                    <img src="@Model.Details.ImageProduct" alt="Product Image">
+
+                                }
+                                else
+                                {
+                                    <img src="~/imgs/imgProducts/@Model.Details.ImageProduct" alt="Product Image">
+
+                                }
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -146,7 +174,21 @@
                 {
                     <div class="card item-card-flashsale ">
                         <div class="card-img-top-container">
-                            <img src="~/imgs/imgProducts/@listProduct.ImageProduct" class="card-img-top img-fluid px-1 py-2" alt="Product Image">
+                            @*   2 trường hợp lấy image ra view  *@
+                            @if (!string.IsNullOrEmpty(listProduct.ImageProduct))
+                            {
+                                //nếu img có đường dẫn là http thì lấy trưc tiếp từ model để hiện ra image http (insert trực tiếp từ sql)
+                                if (listProduct.ImageProduct.StartsWith("http"))
+                                {
+                                    <img class="card-img-top img-fluid px-1 py-2" alt="Product Image" src="@listProduct.ImageProduct" />
+                                }
+                                else
+                                {
+                                    //nếu ko phải từ http thì lấy ra từ wwwroot như bình thường
+                                    <img class="card-img-top img-fluid px-1 py-2" alt="Product Image" src="~/imgs/imgProducts/@listProduct.ImageProduct" />
+
+                                }
+                            }
                         </div>
                         <div class="card-body">
                             <a asp-action="ProductDetails" asp-controller="Products" asp-route-id="@listProduct.Id" class="text-decoration-none">

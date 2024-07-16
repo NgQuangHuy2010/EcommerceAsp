@@ -16,7 +16,7 @@ namespace Ecommerce.Controllers
             var viewModel = new HomeViewModel
             {
                 Category = db.Category.Take(12).ToList(),
-                AllProducts = db.Products.ToList(),
+                AllProducts = db.Products.AsEnumerable().OrderBy(x => random.Next()).Take(20).ToList(),
                 RandomProducts = db.Products.AsEnumerable().OrderBy(x => random.Next()).Take(12).ToList(),
 
             };

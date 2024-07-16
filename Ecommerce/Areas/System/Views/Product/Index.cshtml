@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Ecommerce.Models.Product>
+﻿@using Ecommerce.Models
+@model IEnumerable<Ecommerce.Models.Product>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/System/Views/Layout/Admin.cshtml";
@@ -60,7 +61,21 @@
                                             <td>@item.Id</td>
                                             <td>@item.NameProduct</td>
                                             <td>@(item.IdCategoryNavigation != null ? item.IdCategoryNavigation.Name : "N/A")</td>
-                                            <td><img width="70" src="~/imgs/imgProducts/@item.ImageProduct" /></td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.ImageProduct))
+                                                {
+                                                    if (item.ImageProduct.StartsWith("http"))
+                                                    {
+                                                        <img width="70" src="@item.ImageProduct" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img width="70" src="~/imgs/imgProducts/@item.ImageProduct" />
+                                                    }
+                                                }
+                                            </td>
+
+
                                             <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} VNĐ", item.PriceProduct)</td>
                                             <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} VNĐ", item.Discount)</td>
                                             <td>@item.Model</td>
