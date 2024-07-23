@@ -1,53 +1,95 @@
-﻿@model IEnumerable<Ecommerce.Models.Role>
+﻿@model IEnumerable<Ecommerce.Models.NameRole>;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/System/Views/Layout/Admin.cshtml";
 }
 
-<div class="container">
-    <div class="page-title">
-        <h3>Tables</h3>
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <a asp-action="add" class="btn btn-primary">Add role</a>
-                </div>
-                <div class="card-body">
-                    <p class="card-title"></p>
-                    <table class="table table-hover"
-                           id="dataTables-example"
-                           width="100%">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Value</th>
-                                <th>Title</th>
-                                <th></th>
-                               
-                            </tr>
+<link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+<div class="content-body">
+@*     @{
+        var errorMessage = TempData["ErrorMessage"] as string;
+    }
 
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>@item.Id</td>
-                                    <td>@item.Value</td>
-                                    <td>@item.Title</td>
-                                  
-                                    <td>
-                                        <a asp-controller="role" asp-action="edit" asp-route-id="@item.Id" class="btn btn-success">Edit</a>
-                                        <a asp-controller="role" asp-action="delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    } *@
+    <div class="container-fluid">
+        <div class="row page-titles mx-0">
+            <div class="col-sm-6 p-md-0">
+                <div class="welcome-text">
+                    <h4>Hi, welcome !</h4>
+
                 </div>
             </div>
+            <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+                <ol class="breadcrumb">
+
+                    <a asp-action="add_role" class="btn btn-rounded btn-info">
+                        <span class="btn-icon-left text-info">
+                            <i class="fa fa-plus color-info"></i>
+                        </span>Tạo mới vai trò
+                    </a>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Vai trò </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example" class="display" style="min-width: 845px; color:black;">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Vai trò</th>
+                                        <th></th>
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td>@item.NameRole1</td>
+                                    @*          <td>
+
+                                        <span
+                                        style="font-weight:bold; border: 2px solid #0f994b; padding: 2px 5px; color: #0f994b;">Mở</span>
+
+                                        <span
+                                        style="font-weight:bold; border: 2px solid #df2a3c; padding: 2px 5px; color: #df2a3c;">Khóa
+                                        </span>
+
+                                        </td> *@
+                                            <td>
+                                                <a asp-controller="Role" asp-action="update_role" asp-route-id="@item.Id" class="btn "> <i class="fa fa-pencil" style="color: green; font-size:13px;"></i></a>
+                                                <a asp-controller="Role" asp-action="delete" asp-route-id="@item.Id" class="btn "><i class="fa fa-trash " style="color: red; font-size:13px;"></i></a>
+
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
+<script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+{!! Toastr::message() !!}
 

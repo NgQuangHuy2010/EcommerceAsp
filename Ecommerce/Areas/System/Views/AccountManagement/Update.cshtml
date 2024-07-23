@@ -56,6 +56,15 @@
                                                 <span class="text-danger" asp-validation-for="Email"></span>
                                             </div>
                                         </div>
+                                        <div class="col-lg-6 mb-4">
+                                            <div class="form-group">
+                                                <h5><label class="text-label">Vai trò</label></h5>
+                                                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.Role">
+                                                    <option value="">Chọn vai trò...</option>
+                                                </select>
+                                                <span class="text-danger" asp-validation-for="RoleId"></span>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </section>

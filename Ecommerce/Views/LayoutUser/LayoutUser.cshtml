@@ -106,7 +106,7 @@
                     </nav>
                 </div>
                 <div class="col-lg-2">
-                    <div class="header__right">
+                    <div class="header__right d-flex justify-content-around">
                         @using Ecommerce.ModelsView.User
                         @using Microsoft.AspNetCore.Identity
                         @inject SignInManager<ApplicationUser> SignInManager
@@ -118,7 +118,7 @@
                                 <div class="dropdown">
                                     <a class="d-flex align-items-center justify-content-center" data-toggle="dropdown" style="cursor:pointer;">
                                         <i class="fa fa-user-circle-o pr-2" style="color:white; font-size:30px;"></i>
-                                        <span class="text-white">@UserManager.GetUserAsync(User).Result.Fullname</span>
+                                        <span class="text-white text-truncate">@UserManager.GetUserAsync(User).Result.Fullname</span>
                                     </a>
                                     <div class="dropdown-menu">
                                         <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post">
@@ -139,13 +139,6 @@
                                 </a>
                             </div>
                         }
-
-
-
-
-
-
-
                         <ul class="header__right__widget">
                             <li>
                                 @* cho phép sử dụng các lớp và giao diện liên quan đến HTTP trong ASP.NET Core, chẳng hạn như HttpContext và ISession *@

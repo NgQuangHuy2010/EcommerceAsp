@@ -1,13 +1,12 @@
 ﻿using Ecommerce.Models;
 using Ecommerce.ModelsView;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
 
 namespace Ecommerce.Areas.System.Controllers
 {
-    [Authorize(Roles = "Admin")]
+
     [Area("System")]
     [Route("system/category")]
     public class CategoryController : Controller

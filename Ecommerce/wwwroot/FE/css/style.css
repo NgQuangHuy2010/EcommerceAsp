@@ -1,13 +1,19 @@
 
 
 /* page home */
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
 .category-item {
-  text-align: center;
-  padding: 5px; /* Giảm padding để ô nhỏ hơn */
-  border: 1px solid #e0e0e0;
-  margin-bottom: 10px; /* Giảm khoảng cách giữa các ô */
-  max-width: 150px !important; /* Giảm kích thước ô theo chiều ngang */
-  margin-right: 3px;
+    text-align: center;
+    padding: 5px; /* Giảm padding để ô nhỏ hơn */
+    border: 1px solid #e0e0e0;
+    margin-bottom: 10px; /* Giảm khoảng cách giữa các ô */
+    max-width: 150px !important; /* Giảm kích thước ô theo chiều ngang */
+    margin-right: 3px;
 }
 
 .category-item img {
@@ -614,7 +620,7 @@ ol {
 
 .header__right__auth {
   display: inline-block;
-  margin-right: 25px;
+  /*margin-right: 25px;*/
 }
 
 .header__right__auth a {

@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Ecommerce.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.ModelsView.Admin
 {
-    public class UpdateAccountAdminViewModel
+    public class UpdateAccountAdminViewModel : NameRole
     {
+        [Required(ErrorMessage = "Chọn vai trò")]
+        public string? RoleId { get; set; }
         public string? Id { get; set; }
         [Required]
         public string? Fullname { get; set; }

@@ -4,6 +4,8 @@ namespace Ecommerce.ModelsView.Admin
 {
     public class CreateAccountAdminViewModel
     {
+        [Required(ErrorMessage = "Chọn vai trò")]
+        public string? RoleId { get; set; }
         public string? Id { get; set; }
         [Required]
         public string? Fullname { get; set; }

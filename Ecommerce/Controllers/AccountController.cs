@@ -1,4 +1,6 @@
-﻿using Ecommerce.ModelsView.User;
+﻿using Ecommerce.Models;
+using Ecommerce.ModelsView.User;
+using Ecommerce.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
@@ -10,16 +12,17 @@ namespace Ecommerce.Controllers
 
     public class AccountController : Controller
     {
-
+        EcommerceContext db = new EcommerceContext();
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
+        private readonly UserRoleService _userRoleService;
+        public AccountController(UserRoleService userRoleService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-
+            _userRoleService = userRoleService;
         }
 
         [Route("login")]
@@ -33,11 +36,8 @@ namespace Ecommerce.Controllers
             else
             {
                 return View();
-
             }
         }
-
-
         public async Task LoginWithGoogle()
         {
             //var redirectUri = Url.Action("GoogleResponse");
@@ -48,7 +48,6 @@ namespace Ecommerce.Controllers
                     RedirectUri = Url.Action("GoogleResponse")
                 });
         }
-
         public async Task<IActionResult> GoogleResponse()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
@@ -68,8 +67,7 @@ namespace Ecommerce.Controllers
                     {
                         UserName = email,
                         Email = email,
-                        Fullname = fullName // Thêm thông tin tên đầy đủ nếu cần thiết
-                                            // Các thông tin khác có thể lưu tại đây
+                        Fullname = fullName // Thêm thông tin tên đầy đủ nếu cần thiết                      
                     };
                     var resultCreate = await _userManager.CreateAsync(user);
                     if (!resultCreate.Succeeded)
@@ -156,6 +154,7 @@ namespace Ecommerce.Controllers
                 {
                     // tiếp tục tìm email đang đăng nhập 
                     var user = await _userManager.FindByEmailAsync(login.Email);
+                   
                     //kiểm tra nếu role là Admin (cấu hình ở program.cs) 
                     if (await _userManager.IsInRoleAsync(user, "Admin"))
                     {
@@ -173,9 +172,6 @@ namespace Ecommerce.Controllers
             }
             return View(login);
         }
-
-
-
 
 
 

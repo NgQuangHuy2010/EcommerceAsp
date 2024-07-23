@@ -1,11 +1,15 @@
-﻿using Ecommerce.Models;
+﻿using Ecommerce.Authorization;
+using Ecommerce.Models;
 using Ecommerce.ModelsView.User;
+using Ecommerce.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Sử dụng một chuỗi kết nối duy nhất cho cả EcommerceContext và ApplicationDbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -14,22 +18,121 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
 
 // Đăng ký Identity
+// Thêm vào dịch vụ Identity với cấu hình mặc định cho ApplicationUser (model user) vào IdentityRole (model Role - vai trò)
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 3;
-    options.Password.RequiredUniqueChars = 1;
+    options.Password.RequireDigit = false;  // Không bắt buộc phải có số
+    options.Password.RequireLowercase = false;  //// Không bắt buộc phải có chữ thường
+    options.Password.RequireNonAlphanumeric = false;  // Không bắt ký tự đặc biệt
+    options.Password.RequireUppercase = false;  // Không bắt buộc chữ in
+    options.Password.RequiredLength = 3;   // Số ký tự tối thiểu của password
+    options.Password.RequiredUniqueChars = 1;  // Số ký tự riêng biệt
+    //// Cấu hình Lockout - khóa user
+    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Khóa 5 phút
+    //options.Lockout.MaxFailedAccessAttempts = 5; // Thất bại 5 lầ thì khóa
+    //options.Lockout.AllowedForNewUsers = true;
 })
+    // Thêm triển khai EF lưu trữ thông tin về Idetity (theo AppDbContext -> MS SQL Server).
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    // Thêm Token Provider - nó sử dụng để phát sinh token (reset password, confirm email ...)
+    // đổi email, số điện thoại ...
     .AddDefaultTokenProviders();
+
 // Cấu hình quyền truy cập
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    // Chính sách cho Admin
+    options.AddPolicy("RequireAdminRole", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+
+    // Chính sách cho ProductManager
+    options.AddPolicy("RequireProductManagerPermission", policy =>
+    {
+        policy.Requirements.Add(new PermissionRequirement("ProductManager"));
+    });
+
+    // Chính sách cho AccountManager
+    options.AddPolicy("RequireAccountManagerPermission", policy =>
+    {
+        policy.Requirements.Add(new PermissionRequirement("AccountManager"));
+    });
+
+    // Chính sách tổng hợp cho Admin, ProductManager, hoặc AccountManager
+    options.AddPolicy("AdminOrProductManagerOrAccountManager", policy =>
+    {
+        policy.RequireRole("Admin");
+        policy.Requirements.Add(new PermissionRequirement("ProductManager"));
+        policy.Requirements.Add(new PermissionRequirement("AccountManager"));
+    });
+
+    // chặn user truy cập vào System area
+    options.AddPolicy("DenyUserAccessToSystemArea", policy =>
+    {
+        policy.RequireAssertion(context =>
+            !context.User.IsInRole("User") // Người dùng thường không được phép
+            || context.User.IsInRole("Admin") // Admin vẫn được phép
+            || context.User.HasClaim(c => c.Type == "ProductManager" && c.Value == "True") // ProductManager vẫn được phép
+            || context.User.HasClaim(c => c.Type == "AccountManager" && c.Value == "True") // AccountManager vẫn được phép
+        );
+    });
 });
+
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    // Chính sách cho Admin
+//    options.AddPolicy("RequireAdminRole", policy =>
+//    {
+//        policy.RequireRole("Admin");
+//    });
+
+//    // Chính sách cho ProductManager
+//    options.AddPolicy("RequireProductManagerPermission", policy =>
+//    {
+//        policy.Requirements.Add(new PermissionRequirement("ProductManager"));
+//    });
+
+//    // Chính sách cho AccountManager
+//    options.AddPolicy("RequireAccountManagerPermission", policy =>
+//    {
+//        policy.Requirements.Add(new PermissionRequirement("AccountManager"));
+//    });
+
+//    // Chính sách tổng hợp cho Admin, ProductManager, hoặc AccountManager
+//    options.AddPolicy("AdminOrProductManagerOrAccountManager", policy =>
+//    {
+//        policy.RequireRole("Admin");
+//        policy.Requirements.Add(new PermissionRequirement("ProductManager"));
+//        policy.Requirements.Add(new PermissionRequirement("AccountManager"));
+//    });
+//});
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("RequireAdminRole", policy =>
+//    {
+//        policy.RequireRole("Admin");
+//    });
+
+//    options.AddPolicy("RequireProductManagerPermission", policy =>
+//    {
+//        policy.RequireRole("ProductManager");
+//    });
+
+//    options.AddPolicy("RequireAccountManagerPermission", policy =>
+//    {
+//        policy.RequireRole("AccountManager");
+//    });
+
+//    // Chính sách tổng hợp (Admin hoặc ProductManager hoặc AccountManager)
+//    options.AddPolicy("AdminOrProductManagerOrAccountManager", policy =>
+//    {
+//        policy.RequireRole("Admin", "ProductManager", "AccountManager");
+//    });
+//});
+
 // Cấu hình cookie
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -61,6 +164,10 @@ builder.Services.AddControllersWithViews();
 
 
 // Đăng ký các dịch vụ khác
+builder.Services.AddScoped<UserRoleService, UserRoleService>();
+
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<System.IO.Abstractions.IFileSystem, System.IO.Abstractions.FileSystem>();
 builder.Services.AddTransient<IEmail, Email>();
@@ -114,7 +221,7 @@ app.Run();
 //CreateRolesAndAdminUser có nhiệm vụ tạo vai trò "Admin" và "User" nếu chúng chưa tồn tại trong hệ thống
 async Task CreateRolesAndAdminUser(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
 {
-    string[] roleNames = { "Admin", "User" };
+    string[] roleNames = { "Admin", "User", "ProductManager", "AccountManager" };  //có thể thêm quyền và chạy https để update
     IdentityResult roleResult;
 
     foreach (var roleName in roleNames)
