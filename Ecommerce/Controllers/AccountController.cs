@@ -154,12 +154,18 @@ namespace Ecommerce.Controllers
                 {
                     // tiếp tục tìm email đang đăng nhập 
                     var user = await _userManager.FindByEmailAsync(login.Email);
-                   
+
                     //kiểm tra nếu role là Admin (cấu hình ở program.cs) 
                     if (await _userManager.IsInRoleAsync(user, "Admin"))
                     {
                         // return về trang admin 
-                        return RedirectToAction("Index", "Category", new { area = "System" });
+                        return RedirectToAction("Index", "Dashboard", new { area = "System" });
+                    }
+                    else if (!await _userManager.IsInRoleAsync(user, "User"))
+                    {
+                        return RedirectToAction("Index", "Dashboard", new { area = "System" });
+
+
                     }
                     else
                     {

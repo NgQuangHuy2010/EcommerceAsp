@@ -1,5 +1,6 @@
 ﻿using Ecommerce.Models;
 using Ecommerce.ModelsView;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
@@ -7,6 +8,7 @@ using System.IO.Abstractions;
 namespace Ecommerce.Areas.System.Controllers
 {
 
+    [Authorize(Policy = "AuthorizeSystemAreas")]
     [Area("System")]
     [Route("system/category")]
     public class CategoryController : Controller
@@ -24,6 +26,7 @@ namespace Ecommerce.Areas.System.Controllers
         [Route("index")]
         public IActionResult Index()
         {
+
             return View(db.Category.ToList());
 
         }

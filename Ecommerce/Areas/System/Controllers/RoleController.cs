@@ -1,12 +1,13 @@
 ﻿using Ecommerce.Models;
 using Ecommerce.ModelsView.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 namespace Ecommerce.Areas.System.Controllers
 {
-
+    [Authorize(Policy = "AuthorizeSystemAreas")]
     [Area("system")]
     [Route("system/role")]
     public class RoleController : Controller
@@ -23,6 +24,7 @@ namespace Ecommerce.Areas.System.Controllers
         [Route("index")]
         public IActionResult Index()
         {
+
             // Lọc ra vai trò "Admin"
             var roles = _context.NameRoles
                 .Where(role => role.NameRole1 != "Admin")

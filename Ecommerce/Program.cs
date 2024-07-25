@@ -2,8 +2,6 @@
 using Ecommerce.Models;
 using Ecommerce.ModelsView.User;
 using Ecommerce.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -38,10 +36,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     // đổi email, số điện thoại ...
     .AddDefaultTokenProviders();
 
-// Cấu hình quyền truy cập
+
+
+//Cấu hình quyền truy cập
 builder.Services.AddAuthorization(options =>
 {
-    // Chính sách cho Admin
+    //    // Chính sách cho Admin
     options.AddPolicy("RequireAdminRole", policy =>
     {
         policy.RequireRole("Admin");
@@ -59,16 +59,8 @@ builder.Services.AddAuthorization(options =>
         policy.Requirements.Add(new PermissionRequirement("AccountManager"));
     });
 
-    // Chính sách tổng hợp cho Admin, ProductManager, hoặc AccountManager
-    options.AddPolicy("AdminOrProductManagerOrAccountManager", policy =>
-    {
-        policy.RequireRole("Admin");
-        policy.Requirements.Add(new PermissionRequirement("ProductManager"));
-        policy.Requirements.Add(new PermissionRequirement("AccountManager"));
-    });
-
     // chặn user truy cập vào System area
-    options.AddPolicy("DenyUserAccessToSystemArea", policy =>
+    options.AddPolicy("AuthorizeSystemAreas", policy =>
     {
         policy.RequireAssertion(context =>
             !context.User.IsInRole("User") // Người dùng thường không được phép
@@ -80,34 +72,6 @@ builder.Services.AddAuthorization(options =>
 });
 
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    // Chính sách cho Admin
-//    options.AddPolicy("RequireAdminRole", policy =>
-//    {
-//        policy.RequireRole("Admin");
-//    });
-
-//    // Chính sách cho ProductManager
-//    options.AddPolicy("RequireProductManagerPermission", policy =>
-//    {
-//        policy.Requirements.Add(new PermissionRequirement("ProductManager"));
-//    });
-
-//    // Chính sách cho AccountManager
-//    options.AddPolicy("RequireAccountManagerPermission", policy =>
-//    {
-//        policy.Requirements.Add(new PermissionRequirement("AccountManager"));
-//    });
-
-//    // Chính sách tổng hợp cho Admin, ProductManager, hoặc AccountManager
-//    options.AddPolicy("AdminOrProductManagerOrAccountManager", policy =>
-//    {
-//        policy.RequireRole("Admin");
-//        policy.Requirements.Add(new PermissionRequirement("ProductManager"));
-//        policy.Requirements.Add(new PermissionRequirement("AccountManager"));
-//    });
-//});
 
 //builder.Services.AddAuthorization(options =>
 //{
@@ -142,20 +106,20 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 //đăng ký login google
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-    //options.DefaultScheme = GoogleDefaults.AuthenticationScheme;
-    //options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-})
-.AddCookie()
-.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-{
-    //clientId và ClientSecret  dc cấu hình ở appsettings.json
-    options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
-    options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
-});
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+//    //options.DefaultScheme = GoogleDefaults.AuthenticationScheme;
+//    //options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+//})
+//.AddCookie()
+//.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+//{
+//    //clientId và ClientSecret  dc cấu hình ở appsettings.json
+//    options.ClientId = builder.Configuration["GoogleKeys:ClientId"];
+//    options.ClientSecret = builder.Configuration["GoogleKeys:ClientSecret"];
+//});
 
 
 

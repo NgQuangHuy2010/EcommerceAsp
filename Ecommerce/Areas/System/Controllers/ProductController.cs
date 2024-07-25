@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using System.IO.Abstractions;
 namespace Ecommerce.Areas.System.Controllers
 {
-    [Authorize(Policy = "DenyUserAccessToSystemArea")]
+
+    [Authorize(Policy = "AuthorizeSystemAreas")]
     [Area("system")]
     [Route("system/product")]
     public class ProductController : Controller
