@@ -17,12 +17,16 @@ namespace Ecommerce.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserRoleService _userRoleService;
-        public AccountController(UserRoleService userRoleService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
+        private readonly IConfiguration _configuration;
+        private readonly IEmail _emailService;
+        public AccountController(UserRoleService userRoleService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IEmail emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _userRoleService = userRoleService;
+            _configuration = configuration;
+            _emailService = emailService;
         }
 
         [Route("login")]
@@ -195,69 +199,177 @@ namespace Ecommerce.Controllers
             return View();
         }
 
+
+
         [Route("register")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterUserViewModel register)
         {
+
             if (ModelState.IsValid)
             {
-                // Kiểm tra xem email đã tồn tại hay chưa
+                // Tìm kiếm người dùng theo địa chỉ email đã nhập để kiểm tra sự tồn tại.
                 var existingUser = await _userManager.FindByEmailAsync(register.Email);
                 if (existingUser != null)
                 {
+                    // Thêm lỗi vào ModelState nếu email đã tồn tại trong hệ thống.
                     ModelState.AddModelError("Email", "Email này đã được sử dụng!");
-                    return View(register);  // Trả về view đăng ký với lỗi Email đã tồn tại
+                    // Trả về view đăng ký với lỗi email đã tồn tại.
+                    return View(register);
                 }
+
 
                 var user = new ApplicationUser
                 {
-                    UserName = register.Email,
-                    Email = register.Email,
-                    Fullname = register.Fullname, // Gán giá trị Fullname từ RegisterUserViewModel
-                    Phone = register.Phone        // Gán giá trị Phone từ RegisterUserViewModel
+                    UserName = register.Email,  // Đặt UserName của người dùng bằng email.
+                    Email = register.Email,  // Đặt Email của người dùng bằng email đã nhập.
+                    Fullname = register.Fullname,  // Đặt tên đầy đủ của người dùng.
+                    Phone = register.Phone  // Đặt số điện thoại của người dùng.
                 };
-                // Đăng ký người dùng mới với CreateAsync
+
+                // Đăng ký người dùng mới với mật khẩu đã nhập.
                 var result = await _userManager.CreateAsync(user, register.Password);
 
+                // Kiểm tra xem việc tạo người dùng có thành công không.
                 if (result.Succeeded)
                 {
-                    //kiểm tra vai trò có tồn tại ko 
+                    // Kiểm tra xem vai trò "User" đã tồn tại chưa.
                     if (!await _roleManager.RoleExistsAsync("User"))
                     {
-                        //tạo mới vai trò user
+                        // Tạo vai trò "User" nếu chưa tồn tại.
                         await _roleManager.CreateAsync(new IdentityRole("User"));
                     }
-                    //nếu ko có vai trò gì thì gán quyền mặc định là user
+                    // Gán vai trò "User" cho người dùng mới.
                     await _userManager.AddToRoleAsync(user, "User");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Login", "Account");
+
+                    // Tạo một token xác nhận email cho người dùng mới.
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // Tạo liên kết xác nhận email chứa token và userId.qua action ConfirmEmail
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, token = token }, Request.Scheme);
+
+                    // Gửi email xác nhận với liên kết xác nhận bằng SendEmailAsync email.cs trong model
+                    await _emailService.SendEmailAsync(register.Email, "Xác nhận email",
+                        $"Vui lòng xác nhận tài khoản của bạn bằng cách nhấp vào liên kết này: {confirmationLink}");
+
+                    // Chuyển hướng đến trang thông báo đã gửi email.
+                    return RedirectToAction("ConfirmEmailSent");
                 }
-                // Xử lý các lỗi trả về từ Identity khi đăng ký không thành công
+
+                // Xử lý các lỗi trả về từ quá trình đăng ký không thành công.
                 foreach (var error in result.Errors)
                 {
-                    if (error.Code == "PasswordTooShort")
-                    {
-                        ModelState.AddModelError("PasswordTooShort", error.Description);
-                    }
+                    // Thêm lỗi vào ModelState để hiển thị cho người dùng.
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // Nếu ModelState.IsValid không thành công, bạn có thể debug ở đây để xem lỗi
-            foreach (var state in ModelState)
-            {
-                if (state.Value.Errors.Any())
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        // Log or debug error messages
-                        Console.WriteLine($"Error in {state.Key}: {error.ErrorMessage}");
-                    }
-                }
-            }
-
+            // Nếu ModelState không hợp lệ, trả về view đăng ký với các lỗi.
             return View(register);
         }
+
+
+        [Route("confirm-email")]
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            // Kiểm tra xem userId và token có hợp lệ không.
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            // Xác nhận email của người dùng với token.
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View("ConfirmEmailSuccess");
+            }
+
+            return View("Error");
+        }
+
+        [Route("confirm-email-sent")]
+        public IActionResult ConfirmEmailSent()
+        {
+            // Trả về view thông báo rằng email xác nhận đã được gửi thành công.
+            return View();
+        }
+
+
+
+
+
+
+        //[Route("register")]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Register(RegisterUserViewModel register)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Kiểm tra xem email đã tồn tại hay chưa
+        //        var existingUser = await _userManager.FindByEmailAsync(register.Email);
+        //        if (existingUser != null)
+        //        {
+        //            ModelState.AddModelError("Email", "Email này đã được sử dụng!");
+        //            return View(register);  // Trả về view đăng ký với lỗi Email đã tồn tại
+        //        }
+
+        //        var user = new ApplicationUser
+        //        {
+        //            UserName = register.Email,
+        //            Email = register.Email,
+        //            Fullname = register.Fullname, // Gán giá trị Fullname từ RegisterUserViewModel
+        //            Phone = register.Phone        // Gán giá trị Phone từ RegisterUserViewModel
+        //        };
+        //        // Đăng ký người dùng mới với CreateAsync
+        //        var result = await _userManager.CreateAsync(user, register.Password);
+
+        //        if (result.Succeeded)
+        //        {
+        //            //kiểm tra vai trò có tồn tại ko 
+        //            if (!await _roleManager.RoleExistsAsync("User"))
+        //            {
+        //                //tạo mới vai trò user
+        //                await _roleManager.CreateAsync(new IdentityRole("User"));
+        //            }
+        //            //nếu ko có vai trò gì thì gán quyền mặc định là user
+        //            await _userManager.AddToRoleAsync(user, "User");
+        //            await _signInManager.SignInAsync(user, isPersistent: false);
+        //            return RedirectToAction("Login", "Account");
+        //        }
+        //        // Xử lý các lỗi trả về từ Identity khi đăng ký không thành công
+        //        foreach (var error in result.Errors)
+        //        {
+        //            if (error.Code == "PasswordTooShort")
+        //            {
+        //                ModelState.AddModelError("PasswordTooShort", error.Description);
+        //            }
+        //        }
+        //    }
+
+        //    // Nếu ModelState.IsValid không thành công, bạn có thể debug ở đây để xem lỗi
+        //    foreach (var state in ModelState)
+        //    {
+        //        if (state.Value.Errors.Any())
+        //        {
+        //            foreach (var error in state.Value.Errors)
+        //            {
+        //                // Log or debug error messages
+        //                Console.WriteLine($"Error in {state.Key}: {error.ErrorMessage}");
+        //            }
+        //        }
+        //    }
+
+        //    return View(register);
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]

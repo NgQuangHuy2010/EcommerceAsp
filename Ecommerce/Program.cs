@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 // Thêm vào dịch vụ Identity với cấu hình mặc định cho ApplicationUser (model user) vào IdentityRole (model Role - vai trò)
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
+    options.SignIn.RequireConfirmedEmail = true;
     options.Password.RequireDigit = false;  // Không bắt buộc phải có số
     options.Password.RequireLowercase = false;  //// Không bắt buộc phải có chữ thường
     options.Password.RequireNonAlphanumeric = false;  // Không bắt ký tự đặc biệt

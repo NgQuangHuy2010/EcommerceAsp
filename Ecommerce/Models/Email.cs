@@ -13,7 +13,7 @@ namespace Ecommerce.Models
         {
             //content mail
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("hello huy", "nqht123456789@gmail.com"));
+            message.From.Add(new MailboxAddress("huy", "nqht123456789@gmail.com"));
             message.To.Add(new MailboxAddress("", to));
             message.Subject = subject;
             message.Body = new TextPart("plain")

@@ -22,5 +22,6 @@ namespace Ecommerce.ModelsView.User
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
+        public string? EmailConfirmationCode { get; set; }
     }
 }

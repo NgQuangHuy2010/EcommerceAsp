@@ -116,16 +116,22 @@
                             <!-- Nếu đã đăng nhập -->
                             <div class="header__right__auth">
                                 <div class="dropdown">
-                                    <a class="d-flex align-items-center justify-content-center" data-toggle="dropdown" style="cursor:pointer;">
-                                        <i class="fa fa-user-circle-o pr-2" style="color:white; font-size:30px;"></i>
-                                        <span class="text-white text-truncate">@UserManager.GetUserAsync(User).Result.Fullname</span>
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-link ">Đăng xuất</button>
-                                        </form>
-                                    </div>
+                                    @{
+                                        var user = await UserManager.GetUserAsync(User);
+                                        var userFullname = user?.Fullname ?? "Người dùng không xác định"; // Sử dụng toán tử ba ngôi để check null
+                                    }
+                                   
+                                        <a class="d-flex align-items-center justify-content-center" data-toggle="dropdown" style="cursor:pointer;">
+                                            <i class="fa fa-user-circle-o pr-2" style="color:white; font-size:30px;"></i>
+                                        <span class="text-white text-truncate">@userFullname</span>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-link ">Đăng xuất</button>
+                                            </form>
+                                        </div>
+                                    
                                 </div>
                             </div>
                         }
@@ -139,6 +145,8 @@
                                 </a>
                             </div>
                         }
+
+
                         <ul class="header__right__widget">
                             <li>
                                 @* cho phép sử dụng các lớp và giao diện liên quan đến HTTP trong ASP.NET Core, chẳng hạn như HttpContext và ISession *@
