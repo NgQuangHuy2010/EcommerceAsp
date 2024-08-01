@@ -55,8 +55,6 @@ namespace Ecommerce.Areas.System.Controllers
             return View(userViewModels);
         }
 
-
-
         [Route("create")]
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -72,9 +70,6 @@ namespace Ecommerce.Areas.System.Controllers
             return View();
         }
 
-
-
-
         [Route("create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -82,6 +77,13 @@ namespace Ecommerce.Areas.System.Controllers
         {
             if (ModelState.IsValid)
             {
+                var roleExists = await db.NameRoles.AnyAsync(r => r.Id == register.RoleId);
+                if (!roleExists)
+                {
+                    ModelState.AddModelError("RoleId", "Vui lòng chọn vai trò!");
+                    ViewBag.Role = await db.NameRoles.ToListAsync();
+                    return View(register);
+                }
                 // Kiểm tra xem email đã tồn tại hay chưa
                 var existingUser = await _userManager.FindByEmailAsync(register.Email);
                 if (existingUser != null)
@@ -120,13 +122,14 @@ namespace Ecommerce.Areas.System.Controllers
                         //Console.WriteLine($"User created: {user.UserName} - {user.Email}");
                         //Console.WriteLine($"Role assigned: {register.RoleId}");
                     }
-                    else
-                    {
-                        // Nếu không có RoleId được chọn, xử lý theo logic của bạn (ví dụ gán vai trò mặc định)
-                        await _userManager.AddToRoleAsync(user, "User");
-                        //Console.WriteLine($"User created: {user.UserName} - {user.Email}");
-                        //Console.WriteLine("Default role 'User' assigned.");
-                    }
+                    //else
+                    //{
+
+                    //    // Nếu không có RoleId được chọn thì gán vai trò mặc định
+                    //    await _userManager.AddToRoleAsync(user, "User");
+                    //    //Console.WriteLine($"User created: {user.UserName} - {user.Email}");
+                    //    //Console.WriteLine("Default role 'User' assigned.");
+                    //}
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -141,7 +144,7 @@ namespace Ecommerce.Areas.System.Controllers
                 }
             }
 
-            // Nếu ModelState.IsValid không thành công, bạn có thể debug ở đây để xem lỗi
+            // Nếu ModelState.IsValid không thành công, debug 
             foreach (var state in ModelState)
             {
                 if (state.Value.Errors.Any())

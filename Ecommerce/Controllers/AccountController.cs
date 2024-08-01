@@ -381,6 +381,119 @@ namespace Ecommerce.Controllers
 
 
 
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Tìm kiếm người dùng bằng email
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                // Kiểm tra xem người dùng có tồn tại ko và đã dc xác thực email chưa
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    ModelState.AddModelError("Email", "Email không tồn tại!!!");
+                    return View(model);
+                }
+                // tạo token để reset pass
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action(  //callback tới url có action ResetPassword với url là token + email 
+                    "ResetPassword",
+                    "Account",
+                    new { token, email = user.Email },
+                protocol: HttpContext.Request.Scheme);
+
+                // gửi mail bằng email.cs (trong model) đã dc cấu hình 
+                await _emailService.SendEmailAsync(
+                    model.Email,
+                    "Reset Password",
+                    $"Please reset your password by clicking here: {callbackUrl}");
+
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+
+            // Nếu có lỗi, hiển thị lại biểu mẫu
+            return View(model);
+        }
+
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string token = null, string email = null)
+        {
+            // kiểm tra xem token và email có null ko
+            if (token == null || email == null)
+            {
+                return RedirectToAction("Error");
+
+            }
+            //tìm email 
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return RedirectToAction("Error");
+            }
+            // xử lý vô hiệu hóa token đã dc dùng
+            var tokenIsValid = await _userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, "ResetPassword", token);
+            if (!tokenIsValid)
+            {
+                return RedirectToAction("Error");
+            }
+            //gửi về view token và email (có input hidden ở view)
+            var model = new ResetPasswordViewModel { Token = token, Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // tìm email 
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+         
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+
+            // Reset password với token và pass mới 
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+
+
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+
+
 
 
     }
