@@ -415,7 +415,10 @@ namespace Ecommerce.Controllers
                     "Reset Password",
                     $"Please reset your password by clicking here: {callbackUrl}");
 
-                return RedirectToAction("ForgotPasswordConfirmation");
+                TempData["ForgotPasswordMessage"] = "Password reset link has been sent to your email.";
+
+                // Redirect to the Login action
+                return RedirectToAction("Login");
             }
 
             // Nếu có lỗi, hiển thị lại biểu mẫu

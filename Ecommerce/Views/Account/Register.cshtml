@@ -38,12 +38,12 @@
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card border-0 shadow rounded-3 my-5">
                     <div class="card-body p-4 p-sm-5">
-                        <h2 class="card-title text-center mb-5">Đăng ký</h2>
+                        <h2 class="card-title text-center mb-5">Register</h2>
                         <form asp-action="Register" method="post">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" asp-for="Fullname" placeholder="Tên">
+                                <input type="text" class="form-control" asp-for="Fullname" placeholder="Fullname">
                                 <span asp-validation-for="Fullname" class="text-danger"></span>
-                                <label for="floatingName">Tên</label>
+                                <label for="floatingName">Fullname</label>
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" asp-for="Email" placeholder="name@example.com">
@@ -51,12 +51,12 @@
                                 <label for="floatingInput">Email</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" asp-for="Phone" placeholder="Số điện thoại">
+                                <input type="text" class="form-control" asp-for="Phone" placeholder="Phone">
                                 <span asp-validation-for="Phone" class="text-danger"></span>
-                                <label for="floatingPhone">Số điện thoại</label>
+                                <label for="floatingPhone">Phone</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="password" class="form-control" asp-for="Password" placeholder="Mật khẩu">
+                                <input type="password" class="form-control" asp-for="Password" placeholder="Password">
                                 <span asp-validation-for="Password" class="text-danger"></span>
                                 <div class="text-danger">
                                     @if (ViewData.ModelState.ContainsKey("PasswordTooShort"))
@@ -65,24 +65,24 @@
                                     }
                                 </div>
 
-                                <label for="floatingPassword">Mật khẩu</label>
+                                <label for="floatingPassword">Password</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="Xác nhận mật khẩu">
+                                <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="ConfirmPassword">
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 
-                                <label for="floatingConfirmPassword">Xác nhận mật khẩu</label>
+                                <label for="floatingConfirmPassword">ConfirmPassword</label>
                             </div>
 
                             <div class=" my-3">
 
                                 <div class="text-wrap">
-                                    <span>Đã có tài khoản?</span> <a asp-action="Login" asp-controller="Account" class="text-dark">Đăng nhập</a>
+                                    <span>Already have an account?</span> <a asp-action="Login" asp-controller="Account" class="text-dark">Login</a>
                                 </div>
                             </div>
 
                             <div class="d-grid">
-                                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Đăng ký</button>
+                                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Register</button>
                             </div>
                             
 
