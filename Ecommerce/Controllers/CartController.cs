@@ -2,6 +2,8 @@
 using Ecommerce.ModelsView;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Ecommerce.Controllers;
 
@@ -75,7 +77,8 @@ public class CartController : Controller
                 //Lưu lại giỏ hàng đã cập nhật vào session dưới dạng chuỗi JSON
                 HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cartItems));
                 decimal totalAmount = cartItems.Sum(i => i.TotalPrice);
-                //trả về json với số tiền đã update
+
+                Console.WriteLine($"Total Amount: {totalAmount.ToString("N0")} ₫");                //trả về json với số tiền đã update
                 return Json(new { success = true, totalPrice = item.TotalPrice.ToString("N0") + " ₫", totalAmount = totalAmount.ToString("N0") + " ₫" });
             }
         }
@@ -135,8 +138,97 @@ public class CartController : Controller
         return View(totalCart);
     }
 
+    private static readonly HttpClient client = new HttpClient();
+
+    private async Task<string> ExecPostRequest(string url, string data)
+    {
+        var content = new StringContent(data, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync(url, content);
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> MomoPayment()
+    {
+        // Lấy giỏ hàng từ session
+        var cart = HttpContext.Session.GetString("Cart");
+        if (cart == null)
+        {
+            return BadRequest("Cart is empty.");
+        }
+
+        // Chuyển đổi chuỗi JSON thành danh sách CartItem
+        var cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cart);
+        if (cartItems == null || !cartItems.Any())
+        {
+            return BadRequest("Cart is empty.");
+        }
+
+        // Tính tổng số tiền của giỏ hàng
+        decimal totalAmount = cartItems.Sum(i => i.TotalPrice);
+
+        // Thiết lập thông tin thanh toán MoMo
+        string endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+        string partnerCode = "MOMOBKUN20180529";
+        string accessKey = "klm05TvNBzhg7h7j";
+        string secretKey = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
+        string orderInfo = "Thanh toán qua MoMo";
+        string orderId = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        string redirectUrl = "http://localhost:84/Traveltour_github/payment/confirm";
+        string ipnUrl = "http://localhost:84/Traveltour_github/payment/confirm";
+        string extraData = "";
+        string requestId = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        string requestType = "payWithATM";
+
+        // Tạo chuỗi rawHash cho chữ ký
+        string rawHash = $"accessKey={accessKey}&amount={totalAmount.ToString("F0")}&extraData={extraData}&ipnUrl={ipnUrl}&orderId={orderId}&orderInfo={orderInfo}&partnerCode={partnerCode}&redirectUrl={redirectUrl}&requestId={requestId}&requestType={requestType}";
+        string signature;
+
+        // Tạo chữ ký HMACSHA256
+        using (HMACSHA256 hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey)))
+        {
+            byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawHash));
+            signature = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+        }
+
+        // Tạo dữ liệu yêu cầu thanh toán
+        var data = new
+        {
+            partnerCode,
+            partnerName = "Test",
+            storeId = "MomoTestStore",
+            requestId,
+            amount = totalAmount.ToString("F0"),
+            orderId,
+            orderInfo,
+            redirectUrl,
+            ipnUrl,
+            lang = "vi",
+            extraData,
+            requestType,
+            signature
+        };
+
+        // Chuyển đổi dữ liệu thành JSON và gửi yêu cầu POST
+        string jsonData = JsonConvert.SerializeObject(data);
+        string result = await ExecPostRequest(endpoint, jsonData);
+        var jsonResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+
+        // Kiểm tra kết quả và chuyển hướng đến URL thanh toán
+        if (jsonResult != null && jsonResult.ContainsKey("payUrl"))
+        {
+            return Redirect(jsonResult["payUrl"]);
+        }
+
+        return BadRequest("Payment request failed.");
+    }
 
 
 
+
+    public IActionResult Error()
+    {
+        return View();
+    }
 
 }

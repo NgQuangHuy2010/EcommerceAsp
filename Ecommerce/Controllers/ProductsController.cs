@@ -10,6 +10,7 @@ namespace Ecommerce.Controllers
 
         public IActionResult Products(int id)
         {
+
             //lấy id của category
             var category = db.Category.Find(id);
             //so sánh id từ url của category có bằng với id khóa ngoại của bảng Product không
@@ -26,6 +27,7 @@ namespace Ecommerce.Controllers
         [Route("product/details/{id}")]
         public IActionResult ProductDetails(int id)
         {
+
 
             var details = db.Products.Find(id);
 

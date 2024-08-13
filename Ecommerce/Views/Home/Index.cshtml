@@ -6,7 +6,7 @@
     Layout = "~/Views/LayoutUser/LayoutUser.cshtml";
 }
 
-<section class="categories pt-4 border">
+@* <section class="categories pt-4 border">
     <div class="container">
         <div class="row ">
             <div class="col-md-8 px-0">
@@ -61,45 +61,10 @@
             </div>
         </div>
     </section>
-</section>
+</section> *@
 
 <!-- Categories Section End -->
-<!-- Product Section Begin -->
-<section class="product spad bg-light">
-    <div class="container  px-0 py-2">
-        <div class="bg-white border-category">
-            <div class="col-lg-12 px-0">
-                <h2 class="bg-title mb-0 px-3 py-2 text-light text-center">
-                    DANH MỤC NỔI BẬT
-                </h2>
-            </div>
-            <!-- Category Items -->
 
-            <div class="py-4 px-5 row d-flex justify-content-between">
-
-                @foreach (var listCategory in Model.Category)
-                {
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-6 category-item-test bg-white my-3 mx-0 px-0 text-center">
-                       @*  get id của category lên url  *@
-                        <a asp-controller="Products" asp-action="Products" asp-route-id="@listCategory.Id" class="text-decoration-none">
-                        <div class="circle mx-auto mb-2">
-                                <img src="~/imgs/imgCategory/@listCategory.Image"
-                                 alt=""
-                                 class="img-fluid inner-circle" />
-                        </div>
-                        <p class="category-text m-auto">@listCategory.Name</p>
-                    </a>
-                </div>
-                }
-                
-                
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Product Section End -->
 
 <section class="product spad bg-light py-2">
     <div class="container">
@@ -202,3 +167,39 @@
 </section>
 
 <!--end product today  recommend-->
+<!-- category -->
+<section class="product spad bg-light">
+    <div class="container  px-0 py-2">
+        <div class="bg-white border-category">
+            <div class="col-lg-12 px-0">
+                <h2 class="bg-title mb-0 px-3 py-2 text-light text-center">
+                    DANH MỤC NỔI BẬT
+                </h2>
+            </div>
+            <!-- Category Items -->
+
+            <div class="py-4 px-5 row d-flex justify-content-between">
+
+                @foreach (var listCategory in Model.Category)
+                {
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6 category-item-test bg-white my-3 mx-0 px-0 text-center">
+                        @*  get id của category lên url  *@
+                        <a asp-controller="Products" asp-action="Products" asp-route-id="@listCategory.Id" class="text-decoration-none">
+                            <div class="circle mx-auto mb-2">
+                                <img src="~/imgs/imgCategory/@listCategory.Image"
+                                     alt=""
+                                     class="img-fluid inner-circle" />
+                            </div>
+                            <p class="category-text m-auto">@listCategory.Name</p>
+                        </a>
+                    </div>
+                }
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- category End -->

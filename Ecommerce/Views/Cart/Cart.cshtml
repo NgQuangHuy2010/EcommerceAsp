@@ -92,7 +92,11 @@
                             <h4 class="font-weight-bold text-danger">Tổng tiền thanh toán</h4>
                             <h4 class="font-weight-bold text-danger" ></h4>
                         </div>
-                        <a href="#" class="btn btn-block btn-danger my-3 py-3">Tiến hành thanh toán</a>
+                        <form asp-action="MomoPayment" method="post">
+                            <input type="hidden" @* name="total_momo" id="totalAmount" value="@Model.TotalAmount.ToString("N0")" *@ />
+                            <button type="submit">Thanh toán với MoMo</button>
+                        </form>
+                        @* <a href="#" class="btn btn-block btn-danger my-3 py-3">Tiến hành thanh toán</a> *@
                     </div>
                 </div>
             </div>

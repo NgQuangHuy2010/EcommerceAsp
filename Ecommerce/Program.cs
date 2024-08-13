@@ -64,6 +64,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AuthorizeSystemAreas", policy =>
     {
         policy.RequireAssertion(context =>
+        context.User.Identity.IsAuthenticated && // Kiểm tra người dùng đã đăng nhập hay chưa qua identity
             !context.User.IsInRole("User") // Người dùng thường không được phép
             || context.User.IsInRole("Admin") // Admin vẫn được phép
             || context.User.HasClaim(c => c.Type == "ProductManager" && c.Value == "True") // ProductManager vẫn được phép

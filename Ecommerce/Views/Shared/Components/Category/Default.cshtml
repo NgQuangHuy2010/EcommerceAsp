@@ -1,0 +1,20 @@
+﻿
+@model IEnumerable<Ecommerce.Models.Category>
+@{
+    var currentController = ViewContext.RouteData.Values["controller"].ToString();
+    var currentAction = ViewContext.RouteData.Values["action"].ToString();
+    var isHome = (currentController == "Home" && currentAction == "Index");
+}
+<div class="hero__categories @(isHome ? "expanded" : "collapsed") ">
+    <div class="hero__categories__all">
+        <i class="fa fa-bars"></i>
+        <span>Danh mục sản phẩm</span>
+    </div>
+    <ul>
+        @foreach (var category in Model)
+        {
+            <li><a asp-controller="Products" asp-action="Products" asp-route-id="@category.Id">@category.Name</a></li>
+        }
+    </ul>
+</div>
+

@@ -2,7 +2,7 @@
 
 namespace Ecommerce.ModelsView
 {
-    public class UserProductViewModel : SearchViewModel 
+    public class UserProductViewModel : SearchViewModel
     {
 
         public List<Category> Categories { get; set; } = new List<Category>();
