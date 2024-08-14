@@ -36,21 +36,23 @@
 <body>
     <!-- Page Preloder -->
     <div id="preloder">
-        <div class="loader"></div>
+        <div class="ping"></div>
     </div>
+   
+     
 
     <!-- Humberger Begin -->
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
         <div class="humberger__menu__logo">
-            <a href="#"><img src="~/FE/img/logo.png" alt="Logo"></a>
+            <a asp-controller="Home" asp-action="Index"><img src="~/FE/img/logo.png" alt="Logo"></a>
         </div>
         <div class="humberger__menu__cart">
             <ul>
                 <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
                 <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+        
         </div>
         <div class="humberger__menu__widget">
             <div class="header__top__right__language">
@@ -58,16 +60,15 @@
                 <div>Vietnamese</div>
                 <span class="arrow_carrot-down"></span>
                 <ul>
-                    <li><a href="#">Spanis</a></li>
                     <li><a href="#">English</a></li>
                 </ul>
             </div>
             <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i> Login</a>
+                <a asp-action="Login" asp-controller="Account"><i class="fa fa-user"></i>Đăng nhập</a>
             </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
-            <ul>
+  @*           <ul>
                 <li class="active"><a href="./index.html">Home</a></li>
                 <li><a href="./shop-grid.html">Shop</a></li>
                 <li>
@@ -81,14 +82,13 @@
                 </li>
                 <li><a href="./blog.html">Blog</a></li>
                 <li><a href="./contact.html">Contact</a></li>
-            </ul>
+            </ul> *@
         </nav>
         <div id="mobile-menu-wrap"></div>
         <div class="header__top__right__social">
             <a href="#"><i class="fa fa-facebook"></i></a>
-            <a href="#"><i class="fa fa-twitter"></i></a>
             <a href="#"><i class="fa fa-linkedin"></i></a>
-            <a href="#"><i class="fa fa-pinterest-p"></i></a>
+          
         </div>
         <div class="humberger__menu__contact">
             <ul>
@@ -163,10 +163,32 @@
                 </div>
                 <div class="col-lg-3">
                     <div class="header__cart">
-                        <ul>
-                            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-                        </ul>
+                        @* cho phép sử dụng các lớp và giao diện liên quan đến HTTP trong ASP.NET Core, chẳng hạn như HttpContext và ISession *@
+                        @using Microsoft.AspNetCore.Http
+                        @using Newtonsoft.Json
+                        @using Ecommerce.ModelsView
+                        @* IHttpContextAccessor cung cấp quyền truy cập vào HttpContext hiện tại bao gồm thông tin về yêu cầu HTTP, phản hồi, và session *@
+                        @inject IHttpContextAccessor HttpContextAccessor
+
+                        @functions {
+                            int GetCartItemCount()
+                            {
+                                var cart = HttpContextAccessor?.HttpContext?.Session?.GetString("Cart");
+                                if (cart != null)
+                                {
+                                    // Giải tuần tự hóa chuỗi JSON để chuyển đổi chuỗi JSON thành danh sách các đối tượng CartItem
+                                    var cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cart);
+                                    //nếu cartItem null nếu null trả về 0
+                                    return cartItems?.Count ?? 0;
+                                }
+                                return 0; // Return 0 nếu cart trống
+                            }
+                        }
+                            <ul>
+                            <li><a asp-action="Cart" asp-controller="Cart"><i class="fa fa-cart-plus"></i> <span id="cartItemCount">@GetCartItemCount()</span></a></li>
+                                <span class="px-1">Giỏ hàng</span>
+                            </ul>
+                  
                        
                     </div>
                 </div>
@@ -259,14 +281,14 @@
                             <a href="./index.html"><img src="~/FE/img/logo.png" alt=""></a>
                         </div>
                         <ul>
-                            <li>Address: 60-49 Road 11378 New York</li>
-                            <li>Phone: +65 11.188.888</li>
-                            <li>Email: hello@colorlib.com</li>
+                            <li>Địa chỉ: Việt Nam</li>
+                            <li>Số điện thoại: +123-456-789</li>
+                            <li>Email: nqht12345679@gmail.com</li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
-                    <div class="footer__widget">
+            @*         <div class="footer__widget">
                         <h6>Useful Links</h6>
                         <ul>
                             <li><a href="#">About Us</a></li>
@@ -284,7 +306,7 @@
                             <li><a href="#">Innovation</a></li>
                             <li><a href="#">Testimonials</a></li>
                         </ul>
-                    </div>
+                    </div> *@
                 </div>
                 <div class="col-lg-4 col-md-12">
                     <div class="footer__widget">
@@ -303,20 +325,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="footer__copyright">
-                        <div class="footer__copyright__text">
-                            <p>
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                            </p>
-                        </div>
-                        <div class="footer__copyright__payment"><img src="img/payment-item.png" alt=""></div>
-                    </div>
-                </div>
-            </div>
+     
         </div>
     </footer>
     <!-- Footer Section End -->

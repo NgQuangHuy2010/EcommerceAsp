@@ -310,7 +310,6 @@ i {
 
 .inner-circle {
 	width: 50px;
-	height: 60px;
 	object-fit: cover;
 }
 
@@ -400,7 +399,6 @@ i {
 }
 
 /* Preloder */
-
 #preloder {
 	position: fixed;
 	width: 100%;
@@ -408,60 +406,54 @@ i {
 	top: 0;
 	left: 0;
 	z-index: 999999;
-	background: #000;
+	background: rgba(0, 0, 0, 0.5); /* Màu đen với độ mờ 50% */
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-.loader {
-	width: 40px;
-	height: 40px;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -13px;
-	margin-left: -13px;
-	border-radius: 60px;
-	animation: loader 0.8s linear infinite;
-	-webkit-animation: loader 0.8s linear infinite;
+.ping {
+	--uib-size: 100px;
+	--uib-speed: 1s;
+	--uib-color: #3950cf;
+	position: relative;
+	height: var(--uib-size);
+	width: var(--uib-size);
 }
 
-@keyframes loader {
+	.ping::before,
+	.ping::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		border-radius: 50%;
+		background-color: var(--uib-color);
+		animation: pulse7132 var(--uib-speed) linear infinite;
+		transform: scale(0);
+		opacity: 0;
+	}
+
+	.ping::after {
+		animation-delay: calc(var(--uib-speed) / -2);
+	}
+
+@keyframes pulse7132 {
 	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
+		transform: scale(0);
+		opacity: 1;
 	}
-	50% {
-		-webkit-transform: rotate(180deg);
-		transform: rotate(180deg);
-		border: 4px solid #673ab7;
-		border-left-color: transparent;
-	}
+
 	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
+		transform: scale(1);
+		opacity: 0;
 	}
 }
 
-@-webkit-keyframes loader {
-	0% {
-		-webkit-transform: rotate(0deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
-	}
-	50% {
-		-webkit-transform: rotate(180deg);
-		border: 4px solid #673ab7;
-		border-left-color: transparent;
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
-	}
-}
+
+
 
 /*---------------------
   Header
@@ -530,7 +522,7 @@ i {
 }
 
 .header__top__right__social a {
-	font-size: 14px;
+	font-size: 16px;
 	display: inline-block;
 	color: #1c1c1c;
 	margin-right: 20px;
@@ -569,7 +561,7 @@ i {
 }
 
 .header__top__right__language div {
-	font-size: 14px;
+	font-size: 16px;
 	color: #1c1c1c;
 	display: inline-block;
 	margin-right: 4px;
@@ -605,7 +597,7 @@ i {
 }
 
 .header__top__right__language ul li a {
-	font-size: 14px;
+	font-size: 16px;
 	color: #ffffff;
 	padding: 5px 10px;
 }
@@ -616,7 +608,7 @@ i {
 
 .header__top__right__auth a {
 	display: block;
-	font-size: 14px;
+	font-size: 16px;
 	color: #1c1c1c;
 }
 
@@ -734,24 +726,23 @@ i {
 }
 
 .header__cart ul li a i {
-	font-size: 18px;
+	font-size: 28px;
 	color: #1c1c1c;
 }
 
 	.header__cart ul li a span {
-		height: 13px;
-		width: 13px;
+		height: 24px;
+		width: 24px;
 		background: #2577d6;
-		font-size: 10px;
+		font-size: 12px;
 		color: #ffffff;
-		line-height: 13px;
+		line-height: 24px;
 		text-align: center;
 		font-weight: 700;
 		display: inline-block;
 		border-radius: 50%;
 		position: absolute;
-		top: 0;
-		right: -12px;
+		right: -19px;
 	}
 
 .header__cart .header__cart__price {
@@ -849,7 +840,9 @@ i {
 	line-height: 39px;
 	display: block;
 }
-
+	.hero__categories ul li a:hover {
+		color: #2577d6;
+	}
 .hero__search {
 	overflow: hidden;
 	margin-bottom: 30px;
@@ -891,14 +884,14 @@ i {
 	top: 14px;
 }
 
-.hero__search__form form input {
-	width: 70%;
-	border: none;
-	height: 48px;
-	font-size: 16px;
-	color: #b2b2b2;
-	padding-left: 20px;
-}
+	.hero__search__form form input {
+		width: 70%;
+		border: none;
+		height: 48px;
+		font-size: 16px;
+		color: #252424;
+		padding-left: 20px;
+	}
 
 .hero__search__form form input::placeholder {
 	color: #b2b2b2;
@@ -3121,13 +3114,14 @@ i {
 
 @media only screen and (min-width: 1200px) {
 	.container {
-		max-width: 1170px;
+		max-width: 1570px;
 	}
 }
 
 /* Medium Device = 1200px */
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
+\
 	.header__menu ul li {
 		margin-right: 45px;
 	}

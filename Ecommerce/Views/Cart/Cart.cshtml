@@ -42,9 +42,19 @@
                                 <td class="align-middle">@item.ProductName
                                     @if (!string.IsNullOrEmpty(item.ImageProductCart))  //nếu hình ko null thì load hình
                                     {
-                                        <span>
-                                            <img src="~/imgs/imgProducts/@item.ImageProductCart" class="card-img-top img-fluid px-1 py-2" alt="Product Image" style="max-width: 100px; max-height: 100px;" />
-                                        </span>
+                                        if (item.ImageProductCart.StartsWith("http"))
+                                        {
+                                            <span>
+                                                <img src="@item.ImageProductCart" class="card-img-top img-fluid px-1 py-2" alt="Product Image" style="max-width: 100px; max-height: 100px;" />
+                                            </span>
+                                        }else
+
+                                        {
+                                            <span>
+                                                <img src="~/imgs/imgProducts/@item.ImageProductCart" class="card-img-top img-fluid px-1 py-2" alt="Product Image" style="max-width: 100px; max-height: 100px;" />
+                                            </span>
+                                        }
+
                                     }else{
                                         <span>không có hình ảnh</span>
                                     }
@@ -57,7 +67,7 @@
                                 </td>
                                 <td id="totalPrice_@item.Id" class="align-middle">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", item.TotalPrice)</td>
                                 <td class="align-middle">
-                                    <a  class="btn btn-sm btn-danger" onclick="removeItem(@item.Id)"><i class="fa fa-times"></i></a>
+                                    <a class="btn btn-sm btn-danger" onclick="removeItem(@item.Id)"><i class="fa fa-times text-light"></i></a>
                                 </td>
                             </tr>
                         }
@@ -79,7 +89,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
-                            <h5 class="font-weight-medium">Tạm tính</h5>
+                            <h4 class="font-weight-medium">Tạm tính</h4>
                             <h5 class="font-weight-medium text-danger" id="totalAmount">@Model.TotalAmount.ToString("N0") ₫</h5>
                         </div>
                         <div class="d-flex justify-content-between">
@@ -92,10 +102,16 @@
                             <h4 class="font-weight-bold text-danger">Tổng tiền thanh toán</h4>
                             <h4 class="font-weight-bold text-danger" ></h4>
                         </div>
-                        <form asp-action="MomoPayment" method="post">
-                            <input type="hidden" @* name="total_momo" id="totalAmount" value="@Model.TotalAmount.ToString("N0")" *@ />
-                            <button type="submit">Thanh toán với MoMo</button>
+                        <form method="post">
+                            <div class="col-lg-12 pt-3">
+                                <button type="submit" class="btn btn-info btn-lg w-100">Thanh toán</button>
+                            </div>
                         </form>
+
+                       @*  <form asp-action="MomoPayment" method="post">
+                            <input type="hidden"  />
+                            <button type="submit">Thanh toán với MoMo</button>
+                        </form> *@
                         @* <a href="#" class="btn btn-block btn-danger my-3 py-3">Tiến hành thanh toán</a> *@
                     </div>
                 </div>
