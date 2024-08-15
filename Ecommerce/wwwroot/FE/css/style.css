@@ -415,7 +415,7 @@ i {
 .ping {
 	--uib-size: 100px;
 	--uib-speed: 1s;
-	--uib-color: #3950cf;
+	--uib-color: #f61a1a;
 	position: relative;
 	height: var(--uib-size);
 	width: var(--uib-size);
@@ -1878,7 +1878,8 @@ i {
 }
 
 .product__details__pic__item img {
-	min-width: 100%;
+	min-width: 40%;
+
 }
 
 .product__details__pic__slider img {
@@ -3632,6 +3633,7 @@ i {
 /* Small Device = 320px */
 
 @media only screen and (max-width: 479px) {
+
 	.hero__search__form form .hero__search__categories {
 		display: none;
 	}

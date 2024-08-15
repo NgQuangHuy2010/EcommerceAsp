@@ -126,13 +126,38 @@
                                     <li><a href="#">English</a></li>
                                 </ul>
                             </div>
+                            @using Ecommerce.ModelsView.User
+                            @using Microsoft.AspNetCore.Identity
+                            @inject SignInManager<ApplicationUser> SignInManager
+                            @inject UserManager<ApplicationUser> UserManager
+                             @if (SignInManager.IsSignedIn(User))
+                        {
+                            <!-- Nếu đã đăng nhập -->
                             <div class="header__top__right__auth">
+                                    @{
+                                        var user = await UserManager.GetUserAsync(User);
+                                        var userFullname = user?.Fullname ?? "Người dùng không xác định"; // Sử dụng toán tử ba ngôi để check null
+                                    }
+                                    <div class="dropdown">
+                                        <a class="nav-link dropdown-toggle" style="cursor:pointer;"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i>Xin chào, @userFullname</a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-link text-dark">Đăng xuất</button>
+                                                </form>
+                                            <!-- Thêm các mục khác nếu cần -->
+                                        </div>
+                                    </div>
+                                </div>
+                        }else{
+                                <div class="header__top__right__auth">
                                 <a asp-controller="Account" asp-action="Login"><i class="fa fa-user"></i> Đăng nhập</a>
-                            </div>
+                                </div>
+                        }
                         </div>
-                    </div>
                 </div>
             </div>
+        </div>
         </div>
 
         <div class="container">
@@ -330,6 +355,7 @@
     </footer>
     <!-- Footer Section End -->
     <!-- Js Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="~/FE/js/jquery-3.3.1.min.js"></script>
     <script src="~/FE/js/bootstrap.min.js"></script>
     <script src="~/FE/js/jquery.nice-select.min.js"></script>
@@ -340,6 +366,7 @@
     <script src="~/FE/js/main.js"></script>
     <script src="~/FE/owlcarousel/owl.carousel.min.js"></script>
     <script src="~/FE/js/owlcarousel.js"></script>
+
     @RenderSection("Scripts", required: false)
 
 

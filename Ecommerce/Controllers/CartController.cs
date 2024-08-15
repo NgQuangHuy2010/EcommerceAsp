@@ -37,6 +37,7 @@ public class CartController : Controller
                 ImageProductCart = product.ImageProduct // Set image thông qua model product 
             });
             HttpContext.Session.SetObject("Cart", cart);
+            Console.WriteLine(JsonConvert.SerializeObject(cart, Formatting.Indented));
             return Json(new { success = true, message = "Thêm vào giỏ hàng thành công!", newItem = true });
         }
     }
@@ -76,10 +77,19 @@ public class CartController : Controller
                 item.Quantity = quantity;
                 //Lưu lại giỏ hàng đã cập nhật vào session dưới dạng chuỗi JSON
                 HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cartItems));
-                decimal totalAmount = cartItems.Sum(i => i.TotalPrice);
-
-                Console.WriteLine($"Total Amount: {totalAmount.ToString("N0")} ₫");                //trả về json với số tiền đã update
-                return Json(new { success = true, totalPrice = item.TotalPrice.ToString("N0") + " ₫", totalAmount = totalAmount.ToString("N0") + " ₫" });
+                var totalCart = new TotalCart();
+                totalCart.Items = cartItems;
+                decimal totalAmount = totalCart.TotalAmount;
+                decimal totalPayment = totalCart.TotalPayment;
+                //Console.WriteLine($"Total Amount: {totalAmount.ToString("N0")} ₫");                
+                //trả về json với số tiền đã update (bên js phải khớp với key trả về bên controller)
+                return Json(new
+                {
+                    success = true,
+                    totalPrice = item.TotalPrice.ToString("N0") + " ₫",
+                    totalAmount = totalAmount.ToString("N0") + " ₫",
+                    totalPayment = totalPayment.ToString("N0") + " ₫"
+                });
             }
         }
         return Json(new { success = false, message = "Item not found in cart." });
@@ -138,6 +148,11 @@ public class CartController : Controller
         return View(totalCart);
     }
 
+
+
+
+
+    //thanh toán momo
     private static readonly HttpClient client = new HttpClient();
 
     private async Task<string> ExecPostRequest(string url, string data)
