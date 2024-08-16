@@ -106,7 +106,7 @@
                             <h4 class="font-weight-bold text-danger">Tổng tiền thanh toán</h4>
                             <h4 class="font-weight-bold text-danger" id="totalPayment">@Model.TotalPayment.ToString("N0") ₫</h4>
                         </div>
-                        <form method="post">
+                        <form method="post" asp-action="Checkout" asp-controller="Checkout">
                             <div class="col-lg-12 pt-3">
                                 <button type="submit" class="btn btn-info btn-lg w-100">Thanh toán</button>
                             </div>

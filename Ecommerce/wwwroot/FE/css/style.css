@@ -51,7 +51,7 @@ p {
 	color: #6f6f6f;
 	font-weight: 400;
 	line-height: 26px;
-	margin: 0 0 15px 0;
+	margin: 0 0 19px 0;
 }
 
 img {
@@ -77,6 +77,31 @@ ol {
 	padding: 0;
 	margin: 0;
 }
+
+/* custom checkout*/
+.product-item {
+	word-wrap: break-word; /* Ngắt từ khi cần thiết */
+	overflow-wrap: break-word; /* Ngắt từ khi cần thiết */
+	display: flex; /* Sử dụng flexbox để bố trí các phần tử */
+	justify-content: space-between; /* Căn chỉnh không gian giữa các phần tử */
+	margin-bottom: 10px; /* Khoảng cách giữa các mục */
+}
+
+.product-name {
+	flex: 1; /* Cho phép tên sản phẩm chiếm không gian còn lại */
+	margin-right: 5px; /* Khoảng cách giữa tên sản phẩm và số lượng, giá */
+}
+
+.product-price {
+	white-space: nowrap; /* Đảm bảo giá không xuống dòng */
+}
+.radio-icon {
+	width: 30px; /* Kích thước hình ảnh */
+	height: 30px; /* Kích thước hình ảnh */
+}
+/*end custom checkout*/
+
+
 /* custom category layout */
 .hero__categories.collapsed ul {
 	display: none;
@@ -2314,6 +2339,7 @@ i {
 
 .checkout__form p {
 	column-rule: #b2b2b2;
+	color:black;
 }
 
 .checkout__input {
@@ -2329,16 +2355,34 @@ i {
 	color: #dd2222;
 }
 
-.checkout__input input {
+	.checkout__input input {
+		width: 100%;
+		height: 46px;
+		border: 1px solid #dad7d7;
+		padding-left: 20px;
+		font-size: 18px;
+		color: #181818;
+		border-radius: 4px;
+	}
+.checkout__select {
+	margin-bottom: 24px;
+}
+.checkout__select p {
+	color: #1c1c1c;
+	margin-bottom: 20px;
+}
+.checkout__select  {
 	width: 100%;
-	height: 46px;
-	border: 1px solid #ebebeb;
+	height: 46px ;
+	border: 1px solid #dad7d7;
 	padding-left: 20px;
-	font-size: 16px;
-	color: #b2b2b2;
+	font-size: 18px;
+	color: #181818;
 	border-radius: 4px;
 }
-
+.checkout__select p span {
+	color: #dd2222;
+}
 .checkout__input input.checkout__input__add {
 	margin-bottom: 20px;
 }
@@ -2348,12 +2392,19 @@ i {
 }
 
 .checkout__input__checkbox {
+	font-size:13px;
 	margin-bottom: 10px;
+	border: solid 1px #c4b9b9;
+	border-radius: 5px;
+	padding: 15px;
 }
+	.checkout__input__checkbox:hover {
+		border: solid 1px #d42525;
+	}
 
 .checkout__input__checkbox label {
 	position: relative;
-	font-size: 16px;
+	font-size: 17px;
 	color: #1c1c1c;
 	padding-left: 40px;
 	cursor: pointer;
@@ -2361,7 +2412,7 @@ i {
 
 .checkout__input__checkbox label input {
 	position: absolute;
-	visibility: hidden;
+	
 }
 
 .checkout__input__checkbox label input:checked~.checkmark {
@@ -2431,7 +2482,7 @@ i {
 .checkout__order ul li {
 	font-size: 16px;
 	color: #6f6f6f;
-	line-height: 40px;
+	line-height: 20px;
 	list-style: none;
 }
 
@@ -2460,7 +2511,7 @@ i {
 }
 
 .checkout__order .checkout__order__total {
-	font-size: 18px;
+	font-size: 20px;
 	color: #1c1c1c;
 	font-weight: 700;
 	border-bottom: 1px solid #e1e1e1;

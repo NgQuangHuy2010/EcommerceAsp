@@ -25,6 +25,7 @@
   <ItemGroup>
     <Folder Include="Areas\System\Data\" />
     <Folder Include="Areas\System\Models\" />
+    <Folder Include="Data\" />
     <Folder Include="wwwroot\imgs\imgProducts\" />
     <Folder Include="wwwroot\imgs\imgCategory\" />
   </ItemGroup>
