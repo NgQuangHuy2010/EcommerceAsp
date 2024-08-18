@@ -27,38 +27,90 @@ namespace Ecommerce.Controllers
 
         [HttpPost]
         [Route("checkout")]
-        public IActionResult Checkout()
+        public async Task<IActionResult> Index(CheckoutViewModel model)
         {
-            // Lấy giỏ hàng từ session
-            List<CartItem> cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+            //// Kiểm tra và log dữ liệu từ session
+            var checkoutViewModel = HttpContext.Session.GetObject<CheckoutViewModel>("CheckoutCart");
+            //if (checkoutViewModel == null)
+            //{
+            //    // Log lỗi nếu session bị mất
+            //    Console.WriteLine("CheckoutCart session is null.");
+            //    return RedirectToAction("Index", "Cart");
+            //}
 
-            if (cart.Count == 0)
+            //// Phân tích các thành phần địa chỉ từ JSON
+            //if (!string.IsNullOrEmpty(Request.Form["AddressComponents"]))
+            //{
+            //    var addressComponentsJson = Request.Form["AddressComponents"];
+            //    try
+            //    {
+            //        model.AddressComponents = JsonConvert.DeserializeObject<List<string>>(addressComponentsJson);
+            //    }
+            //    catch (JsonReaderException ex)
+            //    {
+            //        // Log lỗi nếu không giải mã được JSON
+            //        Console.WriteLine($"Lỗi khi giải mã dữ liệu JSON: {ex.Message}");
+            //        Console.WriteLine($"Dữ liệu JSON: {addressComponentsJson}");
+            //        // Có thể thêm một thông báo lỗi cho người dùng hoặc hành động khác tại đây
+            //    }
+            //}
+
+            // Kiểm tra tính hợp lệ của model
+            if (!ModelState.IsValid)
             {
-                return Json(new { success = false, message = "Giỏ hàng của bạn đang trống!" });
+                // Log lỗi nếu model không hợp lệ
+                Console.WriteLine("Model state is not valid.");
+                // Trả lại view với lỗi và dữ liệu session
+                model.Items = checkoutViewModel.Items;
+                model.Shipping = checkoutViewModel.Shipping;
+                model.TotalAmount = checkoutViewModel.TotalAmount;
+                model.TotalPayment = checkoutViewModel.TotalPayment;
+                return View(model);
             }
-            //tạo đối tượng chứa các thông tin trong giỏ hàng (tái dùng từ cart)
-            var totalCart = new TotalCart
-            {
-                Items = cart,
-            };
-            var checkoutViewModel = new CheckoutViewModel
-            {
-                Items = totalCart.Items,
-                Shipping = totalCart.Shipping,
-                TotalAmount = totalCart.TotalAmount,
-                TotalPayment = totalCart.TotalPayment
-            };
-            // In ra console thông tin tất cả các sản phẩm trong giỏ hàng
-            Console.WriteLine("Thông tin giỏ hàng khi bấm thanh toán:");
-            foreach (var item in checkoutViewModel.Items)
-            {
-                Console.WriteLine($"Id: {item.Id}, Tên sản phẩm: {item.ProductName}, Giá: {item.ProductPrice}, Số lượng: {item.Quantity}, Tổng tiền: {item.ProductPrice * item.Quantity}");
-            }
-            Console.WriteLine($"Phí vận chuyển: {checkoutViewModel.Shipping}");
-            Console.WriteLine($"Tổng tiền thanh toán: {checkoutViewModel.TotalPayment}");
-            HttpContext.Session.SetObject("CheckoutCart", checkoutViewModel);
+
+            //// Xử lý và lưu thông tin vào session
+            //model.Items = checkoutViewModel.Items;
+            //model.Shipping = checkoutViewModel.Shipping;
+            //model.TotalAmount = checkoutViewModel.TotalAmount;
+            //model.TotalPayment = checkoutViewModel.TotalPayment;
+
+            //HttpContext.Session.SetObject("PaymentData", model);
+            //var paymentData = HttpContext.Session.GetObject<CheckoutViewModel>("PaymentData");
+            //if (paymentData != null)
+            //{
+            //    Console.WriteLine("PaymentData session contains data.");
+            //    Console.WriteLine($"Họ và tên: {paymentData.FullName}");
+            //    Console.WriteLine($"Địa chỉ: {paymentData.Address}");
+            //    Console.WriteLine($"Số điện thoại: {paymentData.PhoneNumber}");
+            //    Console.WriteLine($"Email: {paymentData.Email}");
+            //    Console.WriteLine($"Phí vận chuyển: {paymentData.Shipping}");
+            //    Console.WriteLine($"Tổng tiền thanh toán: {paymentData.TotalPayment}");
+            //    Console.WriteLine("Các sản phẩm:");
+            //    if (paymentData.Items != null)
+            //    {
+            //        foreach (var item in paymentData.Items)
+            //        {
+            //            Console.WriteLine($"Tên sản phẩm: {item.ProductName}, Số lượng: {item.Quantity}, Giá: {item.TotalPrice}");
+            //        }
+            //    }
+            //    if (paymentData.AddressComponents != null)
+            //    {
+            //        Console.WriteLine($"Địa chỉ chi tiết: {string.Join(", ", paymentData.AddressComponents)}");
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("PaymentData session is empty.");
+            //}
+
+
+
             return RedirectToAction("Index");
         }
+
+
+
+
 
         [HttpGet]
         public JsonResult GetLocations()
@@ -101,9 +153,6 @@ namespace Ecommerce.Controllers
             }).ToList();
             return Json(filteredData);
         }
-
-
-
 
     }
 }

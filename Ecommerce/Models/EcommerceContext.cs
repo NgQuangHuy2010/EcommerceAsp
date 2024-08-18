@@ -31,11 +31,16 @@ public partial class EcommerceContext : DbContext
 
     public virtual DbSet<NameRole> NameRoles { get; set; }
 
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<RolePermission> RolePermissions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=HUY;Initial Catalog=ecommerce;Persist Security Info=True;User ID=sa;Password=123;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -126,6 +131,42 @@ public partial class EcommerceContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.NameRole1).HasColumnName("name_role");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.ToTable("Order");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Amount)
+                .HasColumnType("money")
+                .HasColumnName("amount");
+            entity.Property(e => e.CreatedAt)
+                .IsRowVersion()
+                .IsConcurrencyToken()
+                .HasColumnName("created_at");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.OrderInfo).HasColumnName("order_info");
+        });
+
+        modelBuilder.Entity<OrderDetail>(entity =>
+        {
+            entity.ToTable("Order_details");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Address).HasColumnName("address");
+            entity.Property(e => e.Amount)
+                .HasColumnType("money")
+                .HasColumnName("amount");
+            entity.Property(e => e.DetailedAddress).HasColumnName("detailed_address");
+            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.Fullname).HasColumnName("fullname");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.PartnerCode).HasColumnName("partnerCode");
+            entity.Property(e => e.Phone).HasColumnName("phone");
+            entity.Property(e => e.Products).HasColumnName("products");
         });
 
         modelBuilder.Entity<Product>(entity =>

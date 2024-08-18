@@ -2,7 +2,6 @@
 using Ecommerce.ModelsView;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Ecommerce.Controllers;
@@ -148,95 +147,53 @@ public class CartController : Controller
         return View(totalCart);
     }
 
-
-
-
-
-    //thanh toán momo
-    private static readonly HttpClient client = new HttpClient();
-
-    private async Task<string> ExecPostRequest(string url, string data)
-    {
-        var content = new StringContent(data, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync(url, content);
-        return await response.Content.ReadAsStringAsync();
-    }
-
     [HttpPost]
-    public async Task<IActionResult> MomoPayment()
+    public IActionResult CartCheckout()
     {
         // Lấy giỏ hàng từ session
-        var cart = HttpContext.Session.GetString("Cart");
-        if (cart == null)
+        List<CartItem> cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+        if (cart.Count == 0)
         {
-            return BadRequest("Cart is empty.");
+            return Json(new { success = false, message = "Giỏ hàng của bạn đang trống!" });
         }
-
-        // Chuyển đổi chuỗi JSON thành danh sách CartItem
-        var cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cart);
-        if (cartItems == null || !cartItems.Any())
+        //tạo đối tượng chứa các thông tin trong giỏ hàng (tái dùng từ cart)
+        var totalCart = new TotalCart
         {
-            return BadRequest("Cart is empty.");
-        }
-
-        // Tính tổng số tiền của giỏ hàng
-        decimal totalAmount = cartItems.Sum(i => i.TotalPrice);
-
-        // Thiết lập thông tin thanh toán MoMo
-        string endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
-        string partnerCode = "MOMOBKUN20180529";
-        string accessKey = "klm05TvNBzhg7h7j";
-        string secretKey = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
-        string orderInfo = "Thanh toán qua MoMo";
-        string orderId = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-        string redirectUrl = "http://localhost:84/Traveltour_github/payment/confirm";
-        string ipnUrl = "http://localhost:84/Traveltour_github/payment/confirm";
-        string extraData = "";
-        string requestId = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-        string requestType = "payWithATM";
-
-        // Tạo chuỗi rawHash cho chữ ký
-        string rawHash = $"accessKey={accessKey}&amount={totalAmount.ToString("F0")}&extraData={extraData}&ipnUrl={ipnUrl}&orderId={orderId}&orderInfo={orderInfo}&partnerCode={partnerCode}&redirectUrl={redirectUrl}&requestId={requestId}&requestType={requestType}";
-        string signature;
-
-        // Tạo chữ ký HMACSHA256
-        using (HMACSHA256 hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey)))
-        {
-            byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawHash));
-            signature = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-        }
-
-        // Tạo dữ liệu yêu cầu thanh toán
-        var data = new
-        {
-            partnerCode,
-            partnerName = "Test",
-            storeId = "MomoTestStore",
-            requestId,
-            amount = totalAmount.ToString("F0"),
-            orderId,
-            orderInfo,
-            redirectUrl,
-            ipnUrl,
-            lang = "vi",
-            extraData,
-            requestType,
-            signature
+            Items = cart,
         };
-
-        // Chuyển đổi dữ liệu thành JSON và gửi yêu cầu POST
-        string jsonData = JsonConvert.SerializeObject(data);
-        string result = await ExecPostRequest(endpoint, jsonData);
-        var jsonResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
-
-        // Kiểm tra kết quả và chuyển hướng đến URL thanh toán
-        if (jsonResult != null && jsonResult.ContainsKey("payUrl"))
+        var checkoutViewModel = new CheckoutViewModel
         {
-            return Redirect(jsonResult["payUrl"]);
+            Items = totalCart.Items,
+            Shipping = totalCart.Shipping,
+            TotalAmount = totalCart.TotalAmount,
+            TotalPayment = totalCart.TotalPayment
+        };
+        // In ra console thông tin tất cả các sản phẩm trong giỏ hàng
+        Console.WriteLine("Thông tin giỏ hàng khi bấm thanh toán:");
+        foreach (var item in checkoutViewModel.Items)
+        {
+            Console.WriteLine($"Id: {item.Id}, Tên sản phẩm: {item.ProductName}, Giá: {item.ProductPrice}, Số lượng: {item.Quantity}, Tổng tiền: {item.ProductPrice * item.Quantity}");
         }
-
-        return BadRequest("Payment request failed.");
+        Console.WriteLine($"Phí vận chuyển: {checkoutViewModel.Shipping}");
+        Console.WriteLine($"Tổng tiền thanh toán: {checkoutViewModel.TotalPayment}");
+        HttpContext.Session.SetObject("CheckoutCart", checkoutViewModel);
+        return RedirectToAction("Index", "Checkout");
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

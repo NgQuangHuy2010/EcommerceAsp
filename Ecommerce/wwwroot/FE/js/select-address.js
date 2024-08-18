@@ -64,4 +64,15 @@
             }
         }
     });
+
+    // Xử lý việc gửi form
+    $('form').submit(function () {
+        var addressComponents = [
+            $('#city option:selected').text(),
+            $('#district option:selected').text(),
+            $('#ward option:selected').text()
+        ];
+
+        $('#AddressComponents').val(JSON.stringify(addressComponents)); 
+    });
 });
