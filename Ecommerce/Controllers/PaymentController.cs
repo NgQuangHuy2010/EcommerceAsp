@@ -95,12 +95,11 @@ namespace Ecommerce.Controllers
                 Console.WriteLine("PaymentData session is empty.");
             }
 
-            //// Chuyển đổi chuỗi JSON thành danh sách
-            ////var cartItems = JsonConvert.DeserializeObject<CheckoutViewModel>(amountMomo);
-            ////if (cartItems == null)
-            ////{
-            ////    return BadRequest("Cart is empty.");
-            ////}
+
+            if (paymentData == null)
+            {
+                return BadRequest("Cart is empty.");
+            }
 
             ////// lấy tổng tiền
             decimal totalAmount = paymentData.TotalPayment;
@@ -112,8 +111,8 @@ namespace Ecommerce.Controllers
             string secretKey = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
             string orderInfo = "Thanh toán qua MoMo";
             string orderId = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-            string redirectUrl = "http://localhost:84/Traveltour_github/payment/confirm";
-            string ipnUrl = "http://localhost:84/Traveltour_github/payment/confirm";
+            string redirectUrl = "https://localhost:7131/paymentsuccess";
+            string ipnUrl = "https://localhost:7131/paymentsuccess";
             string extraData = "";
             string requestId = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
             string requestType = "payWithATM";

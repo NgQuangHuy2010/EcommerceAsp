@@ -142,20 +142,19 @@ public partial class EcommerceContext : DbContext
                 .HasColumnType("money")
                 .HasColumnName("amount");
             entity.Property(e => e.CreatedAt)
-                .IsRowVersion()
-                .IsConcurrencyToken()
+                .HasColumnType("datetime")
                 .HasColumnName("created_at");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.OrderInfo).HasColumnName("order_info");
+            entity.Property(e => e.PartnerCode).HasColumnName("partner_code");
+            entity.Property(e => e.Status).HasColumnName("status");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
             entity.ToTable("Order_details");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.Amount)
                 .HasColumnType("money")

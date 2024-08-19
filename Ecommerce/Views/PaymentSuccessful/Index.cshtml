@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/LayoutUser/LayoutUser.cshtml";
+}
+
+<section class="checkout">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="alert alert-success text-center">
+                    <h4 class="alert-heading">Thanh toán thành công!</h4>
+                    <p class="mb-0">Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi. Đơn hàng của bạn đã được ghi nhận và sẽ sớm được xử lý.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <a asp-action="Index" asp-controller="Home"  class="btn btn-primary mt-3">Tiếp tục mua sắm</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

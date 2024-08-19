@@ -13,5 +13,9 @@ public partial class Order
 
     public string? OrderInfo { get; set; }
 
-    public byte[]? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
+
+    public string? PartnerCode { get; set; }
+
+    public string? Status { get; set; }
 }
